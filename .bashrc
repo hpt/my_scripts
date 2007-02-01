@@ -63,6 +63,29 @@ rsk()
 	perl -ni -e "if(!/$1/){print;}" ~/.ssh/known_hosts
 }
 
+# auto login or execute restricted remote commands (doesn't 
+# include redirection commands such as ssh root@auroralp2 'cat > /tmp/kernel.rpm
+# ' < kernel.rpm ) with ssh
+assh()
+{
+	expect -c "
+spawn sh -c \"ssh $*\"
+expect {
+        timeout {
+                send_user \"\rtimeout for ssh to $*\r\"
+                exit 0
+        }
+        \"(yes/no)?\" {
+                send \"yes\r\"
+                exp_continue
+        }
+        \"assword:\" {
+                send \"don2rry\r\"
+        }
+}
+interact"
+}
+
 # functions
 bu()
 {
