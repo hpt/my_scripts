@@ -69,19 +69,26 @@ rsk()
 assh()
 {
 	expect -c "
-spawn sh -c \"ssh $*\"
-expect {
-        timeout {
-                send_user \"\rtimeout for ssh to $*\r\"
-                exit 0
-        }
-        \"(yes/no)?\" {
-                send \"yes\r\"
-                exp_continue
-        }
-        \"assword:\" {
-                send \"don2rry\r\"
-        }
+while 1 {
+	spawn ssh $*
+	expect {
+	        timeout {
+	                send_user \"\rtimeout for ssh to $*\r\"
+	                exit 0
+	        }
+	        \"(yes/no)?\" {
+	                send \"yes\r\"
+	                exp_continue
+	        }
+	        \"assword:\" {
+	                send \"don2rry\r\"
+			break
+	        }
+		\"ailed.\" {
+			exec sh -c \"rm -rf ~/.ssh/known_hosts\"
+			continue
+		}
+	}
 }
 interact"
 }
