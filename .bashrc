@@ -72,6 +72,7 @@ assh()
 	then
 		set root@$1
 	fi
+	local HOST=${1##*@}
 
 	expect -c "
 while 1 {
@@ -91,7 +92,9 @@ while 1 {
 			break
 	        }
 		\"ailed.\" {
-			exec sh -c \"rm -rf ~/.ssh/known_hosts\"
+			exec sh -c \". ~/.bashrc;rsk $HOST\"
+			# cann't define HOST in this scope,otherwise
+			# after rsk will be none string.
 			continue
 		}
 	}
