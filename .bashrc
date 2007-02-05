@@ -72,6 +72,7 @@ assh()
 while 1 {
 	spawn ssh $*
 	expect {
+		# must give a 'timeout' or 'default' when autologin, see man expect
 	        timeout {
 	                send_user \"\rtimeout for ssh to $*\r\"
 	                exit 0
