@@ -68,6 +68,11 @@ rsk()
 # ' < kernel.rpm ) with ssh
 assh()
 {
+	if ! echo $1 | grep -q ".*@"
+	then
+		set root@$1
+	fi
+
 	expect -c "
 while 1 {
 	spawn ssh $*
