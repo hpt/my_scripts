@@ -77,6 +77,7 @@ assh()
 	local HOST=${1##*@}
 
 	expect -c "
+set timeout 30
 while 1 {
 	spawn ssh $*
 	expect {
