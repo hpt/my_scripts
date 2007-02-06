@@ -70,7 +70,9 @@ assh()
 {
 	if ! echo $1 | grep -q ".*@"
 	then
-		set root@$1
+		TEMP=$1
+		shift 1
+		set root@$TEMP $*
 	fi
 	local HOST=${1##*@}
 
