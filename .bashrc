@@ -117,6 +117,7 @@ while 1 {
 		}
 	}
 }
+set timeout -1
 if {$RUN_COMMAND} {
 	expect eof
 } else {
