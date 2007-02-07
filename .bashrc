@@ -76,10 +76,10 @@ assh()
 	fi
 	local HOST=${1##*@}
 
-	if [ $# -gt 1 ];then
+	if [ $# -gt 1 ];then		# run remote command,'expect eof',background ok
 		RUN_COMMAND=true
 	else
-		RUN_COMMAND=false
+		RUN_COMMAND=false	# autologin,'interact',background failure
 	fi
 
 
