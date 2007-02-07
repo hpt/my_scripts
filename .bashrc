@@ -107,6 +107,10 @@ while 1 {
 			# after rsk will be none string.
 			continue
 		}
+		\"onnection refuse\" {	# for the host refuse to connect
+			puts \"Connection refused to $*\"
+			exit 0
+		}
 	}
 }
 if {$RUN_COMMAND} {
