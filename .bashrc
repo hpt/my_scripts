@@ -76,6 +76,13 @@ assh()
 	fi
 	local HOST=${1##*@}
 
+	if [ $# -gt 1 ];then
+		RUN_COMMAND=true
+	else
+		RUN_COMMAND=false
+	fi
+
+
 	expect -c "
 set timeout 30
 while 1 {
@@ -102,7 +109,11 @@ while 1 {
 		}
 	}
 }
-interact"
+if {$RUN_COMMAND} {
+	expect eof
+} else {
+	interact
+}"
 }
 
 # functions
