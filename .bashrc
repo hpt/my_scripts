@@ -90,7 +90,7 @@ while 1 {
 	expect {
 		# must give a 'timeout' or 'default' when autologin, see man expect
 	        timeout {
-	                send_user \"\rtimeout for ssh to $*\r\"
+	                puts \"timeout to $*\"
 	                exit 0
 	        }
 	        \"(yes/no)?\" {
