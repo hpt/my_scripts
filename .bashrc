@@ -68,11 +68,11 @@ rsk()
 # ' < kernel.rpm ) with ssh
 assh()
 {
-	if ! echo $1 | grep -q ".*@"
+	if ! echo $1 | grep -q ".*@"	# if the $1 doesn't contain '@'...
 	then
 		TEMP=$1
 		shift 1
-		set root@$TEMP $*
+		set root@$TEMP $*	# ... use 'root@' by default
 	fi
 	local HOST=${1##*@}
 
