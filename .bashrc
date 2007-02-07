@@ -111,6 +111,9 @@ while 1 {
 			puts \"Connection refused to $*\"
 			exit 0
 		}
+		eof {			# for no password needed
+			exit 0
+		}
 	}
 }
 if {$RUN_COMMAND} {
