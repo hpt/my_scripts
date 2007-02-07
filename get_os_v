@@ -1,0 +1,70 @@
+#!/usr/bin/expect -f 
+#
+#
+# Usage: ./get_os_v hostname
+#
+# Notes: if the node is unreachable, this script will be 
+# time out after 10 seconds.
+#
+#
+set ip [lindex $argv 1] 
+set flag [lindex $argv 0]
+
+if { ($flag == 10) } {
+  set mailto [lindex $argv 2]
+  if { ( [lindex $argv 2] == "Dis_App") } {
+      set mailto "liguangc"
+  } elseif { ( [lindex $argv 2] == "Install") } {
+      set mailto "zhanx"
+  }
+  set message "\nWelcome! This node is used by  [lindex $argv 2] until  [lindex $argv 3].\nPlease make sure you have the right to use this machine!\nAny problem,please contact $mailto@cn.ibm.com for details.\n"
+}
+
+if { ($flag == 20) } {
+set message "\nWelcome! Currently,this node is free for your using.\nPlease remember to update the MMS if you want to take up this machine.\n"
+}
+
+set quit 2 
+set remotecmd "ssh -o StrictHostKeyChecking=no -X root@$ip 'if test `uname` = 'Linux';then uname ;else uname -a;fi'"
+
+while {$quit} {
+	set quit [expr {$quit - 1}]
+	
+	spawn sh -c $remotecmd
+	
+	set timeout 20 
+	expect {
+	    "onnection refuse" {
+		if {$quit} {
+			puts "SSH connection refused: $ip"
+		} else {
+			puts "RSH connection refused: $ip"
+			exit 0
+		}
+		set remotecmd "rsh -l root $ip 'if test `uname` = 'Linux';then uname;else uname -a;fi'"
+		continue
+	    }
+	    "(yes/no)?" { send "yes\r"; exp_continue }
+	    "assword:" { send "cluster\r";break}
+	    timeout {
+		if {$quit} {
+			puts "SSH connection timeout: $ip"
+			set remotecmd "rsh -l root $ip 'if test `uname` = 'Linux';then uname;else uname -a;fi'"
+			continue
+		} else {
+			puts "RSH connection timeout: $ip"
+			exit 0
+		}
+	    }
+	    eof {	# for no password be asked
+			exit 0
+	    }
+	    "our address un" {
+		puts "AIX system unknow your address."
+		exit 0
+	    }
+	}
+	#break
+}
+expect eof
+#interact
