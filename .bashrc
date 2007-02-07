@@ -112,6 +112,7 @@ while 1 {
 			exit 0
 		}
 		eof {			# for no password needed
+			puts \"No password be needed....\"
 			exit 0
 		}
 	}
