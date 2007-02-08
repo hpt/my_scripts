@@ -117,8 +117,8 @@ while 1 {
 		}
 	}
 }
-set timeout -1
 if {$RUN_COMMAND} {
+	set timeout -1
 	expect eof
 } else {
 	interact
