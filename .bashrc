@@ -68,25 +68,25 @@ rsk()
 # ' < kernel.rpm ) with ssh
 assh()
 {
-	if ! echo $1 | grep -q ".*@"	# if the $1 doesn't contain '@'...
-	then
-		TEMP=$1
-		shift 1
-		set root@$TEMP $*	# ... use 'root@' by default
-	fi
-	local HOST=${1##*@}
-
 	if [ $# -gt 1 ];then		# run remote command,'expect eof',background ok
 		RUN_COMMAND=true
 	else
 		RUN_COMMAND=false	# autologin,'interact',background failure
 	fi
 
+	local TARGET=$1
+	shift 1				# throw away host info
 
+	if ! echo $TARGET | grep -q ".*@"	# if the $1 doesn't contain '@'...
+	then
+		TARGET=root@$TARGET		# make 'root@...' default
+	fi
+	local HOST=${TARGET##*@}
+	
 	expect -c "
 set timeout 30
 while 1 {
-	spawn ssh $*
+	spawn ssh $TARGET {$*}
 	expect {
 		# must give a 'timeout' or 'default' when autologin, see man expect
 	        timeout {
