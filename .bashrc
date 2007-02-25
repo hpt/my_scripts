@@ -54,7 +54,7 @@ alias telnet='TERM=vt100 telnet'
 # vncviewer used at IBM pLinux ...
 vv()
 {
-	vncviewer -MenuKey=F1 -passwd ~/.vnc/passwd $1 &
+	vncviewer -Shared -MenuKey=F1 -passwd ~/.vnc/passwd $1 &
 }
 
 # remove the host which ssh key changed ...
