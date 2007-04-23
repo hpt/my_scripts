@@ -105,6 +105,8 @@ while 1 {
 			exec sh -c \". ~/.bashrc;rsk $HOST\"
 			# cann't define HOST in this scope,otherwise
 			# after rsk will be none string.
+			close
+			wait
 			continue
 		}
 		\"onnection refuse\" {	# for the host refuse to connect
