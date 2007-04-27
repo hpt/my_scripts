@@ -22,7 +22,7 @@ fi
 lftp_list > $TMP_FILE
 
 differ=$(diff -u $LIST_FILE $TMP_FILE)
-if [ -n $differ ]
+if [ -n "$differ" ]
 then
 	echo "$differ" | mail -s "ISOs changed($(date '+%y/%m/%d'))" ${MAIL_ADDRESS[*]}
 else
