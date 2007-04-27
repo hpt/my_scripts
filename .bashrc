@@ -87,8 +87,9 @@ assh()
 set timeout 30
 while 1 {
 	spawn ssh $TARGET {$*}
+
+	# must give a 'timeout' or 'default' when autologin, see man expect
 	expect {
-		# must give a 'timeout' or 'default' when autologin, see man expect
 	        timeout {
 	                puts \"timeout to $*\"
 	                exit 0
