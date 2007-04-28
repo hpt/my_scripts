@@ -25,6 +25,7 @@ differ=$(diff -u $LIST_FILE $TMP_FILE)
 if [ -n "$differ" ]
 then
 	echo "$differ" | mail -s "ISOs changed($(date '+%y/%m/%d'))" ${MAIL_ADDRESS[*]}
+	\mv -f $TMP_FILE $LIST_FILE
 else
 	echo "No new ISOs available" | mail -s "ISOs don't change.($(date '+%y/%m/%d'))" ${MAIL_ADDRESS[*]}
 fi
