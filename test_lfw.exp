@@ -1,0 +1,18 @@
+#!/usr/bin/expect --
+# A test tool for testing lfw.exp
+
+if {[regexp "test_lfw.exp" $argv0] } {
+	set passwd "hpt123"
+} elseif {[regexp "test_rfw.exp" $argv0]} {
+	set passwd "hpt456"
+}
+
+puts "Username: \n"
+#exp_internal 1
+stty -echo
+expect {
+	"hanpt@cn.ibm.com" { puts "Password: \n";exp_continue }
+	"$passwd"	   { puts "Successful\n" }
+	timeout		   { exit }
+}
+sleep 2 

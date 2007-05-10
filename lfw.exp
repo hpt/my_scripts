@@ -8,6 +8,11 @@ spawn telnet uptwiki
 } elseif {[regexp "lfw.exp" $argv0]} {
 spawn telnet plinuxsrv
 }
+#if {[regexp "rfw.exp" $argv0]} {
+#spawn ./test_rfw.exp
+#} elseif {[regexp "lfw.exp" $argv0]} {
+#spawn ./test_lfw.exp
+#}
 
 expect {
 "login: " {
