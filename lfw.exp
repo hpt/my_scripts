@@ -3,9 +3,9 @@
 #exp_internal 1
 
 log_user 0
-if {$argv0 == "rfw.exp"} {
+if {[regexp "rfw.exp" $argv0]} {
 spawn telnet uptwiki
-} else {
+} elseif {[regexp "lfw.exp" $argv0]} {
 spawn telnet plinuxsrv
 }
 
