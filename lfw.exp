@@ -17,8 +17,15 @@ expect {
 "Password: " {
 	stty -echo
 	send_user "Please input your internat password: "
-	expect_user -re "(\[^\n]*)\n"
-	send_user "\n"
+	expect_user  {
+		-re "(\[^\n]*)\n" {send_user "\n"}
+		timeout {
+			send_user "Forget your password?\n"
+			close
+			wait
+			exit
+		}
+	}
 	send "$expect_out(1,string)\r"
 	stty echo
 	exp_continue
