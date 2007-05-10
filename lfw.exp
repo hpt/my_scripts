@@ -1,0 +1,41 @@
+#!/usr/bin/expect --
+# for passing through the local/remote BSO firewall
+#exp_internal 1
+
+log_user 0
+if {$argv0 == "rfw.exp"} {
+spawn telnet uptwiki
+} else {
+spawn telnet plinuxsrv
+}
+
+expect {
+"Username: " {
+	send "hanpt@cn.ibm.com\r"
+	exp_continue
+}
+"Password: " {
+	stty -echo
+	send_user "Please input your internat password: "
+	expect_user -re "(\[^\n]*)\n"
+	send_user "\n"
+	send "$expect_out(1,string)\r"
+	stty echo
+	exp_continue
+}
+"Successful" {
+	send_user "Passing through BSO successfully\n"
+	close
+	wait
+	exit
+}
+eof {
+	send_user "telnent closes the connection.\n"
+	exit
+}
+timeout {
+	send_user "timeout for telneting to server.\n"
+	exit
+}
+}
+
