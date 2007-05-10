@@ -10,6 +10,12 @@ spawn telnet plinuxsrv
 }
 
 expect {
+"login: " {
+	send_user "Seems that firewall had been past.\n"
+	close
+	wait
+	exit
+}
 "Username: " {
 	send "hanpt@cn.ibm.com\r"
 	exp_continue
