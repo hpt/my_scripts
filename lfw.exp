@@ -47,6 +47,12 @@ expect {
 	wait
 	exit
 }
+"Try Again" {
+	send_user "Authentication Error Please Try Again.\n"
+	close
+	wait
+	exit
+}
 eof {
 	send_user "telnent closes the connection.\n"
 	exit
