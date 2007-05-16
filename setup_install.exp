@@ -1,0 +1,114 @@
+#!/usr/bin/expect --
+switch -- [lindex $argv 0] {
+	"suse" {
+		set install_srv "lslte"
+	}
+	"redhat" {
+		set install_srv "rhlte"
+	}
+	default {
+		puts "Usage: $argv0 <suse|redhat>"
+		exit
+	}
+}
+
+#set timeout 5
+log_user 0
+
+# global variables
+set iso_path ""
+set iso_num 0
+
+# log in
+proc login {} {
+	expect {
+		 "ssword:" {
+			send "don2rry\r"
+			exp_continue
+		}
+		-re "# \$|> \$"
+	}
+}
+
+# launch the ftp program, and drop into interact
+# we use the .netrc now ...
+proc interact_ftp {cmd} {
+	send "$cmd\r"
+	expect {
+		"> \$" {
+			puts "Notes: please try to find the new ISO's info,"
+			puts "and try to setup some varibles:"
+			puts "iso_path: set iso_path {/redhat/beta_cds/rhel5/rhel5-ftp-CD\$i.iso}"
+			puts "iso_num: set iso_num 6"
+		}
+	}
+	send "\r"
+}
+
+#
+proc connect_to {host} {
+	global spawn_id
+	if {[regexp "rhlte" $host]} {
+		set ftp_cmd "lftp ftp3.linux.ibm.com"
+		spawn ssh root@$host
+	} elseif {[regexp "lslte" $host]} {
+		set ftp_cmd "ftp ftp3.linux.ibm.com"
+		set lslte 1
+		spawn ssh lte@$host
+	}
+
+	expect_after {
+		timeout {
+			upvar host host
+			puts "timeout when try to connect_to $host."
+			if {[info exists expect_out(buffer)]} {
+				puts "Context: $expect_out(buffer)"
+			}
+			close
+			wait
+			# return a exception
+			return -code error "timeout to connect."
+		}
+		eof {
+			upvar host host
+			puts "Connection to $host closed."
+			if {[info exists expect_out(buffer)]} {
+				puts "Context: $expect_out(buffer)"
+			}
+			# return a exception
+			return -code error "connection closed."
+		}
+	}
+
+	login
+	if {[info exists lslte]} {
+		send "su -\r"
+		login
+	}
+	interact_ftp $ftp_cmd
+
+	return 1
+}
+	
+# get the new ISO's info
+proc get_iso_info {} {
+	global iso_path iso_num
+
+	# try to connect to server ...
+	if {[catch {connect_to "rhlte"} result]} { # try rhlte first
+		puts "Debug: $result"
+		if {[catch {connect_to "lslte"} result]} { # then lslte second
+			puts "Connect to server failed: $result"
+			exit
+		}
+	}
+
+	interact
+
+	interpreter
+}
+
+get_iso_info
+
+puts "$iso_path"
+puts "$iso_num"
