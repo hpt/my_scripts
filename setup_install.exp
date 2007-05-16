@@ -46,61 +46,50 @@ proc interact_ftp {cmd} {
 }
 
 #
-proc connect_to {host} {
+proc connect_to_ftp3 {} {
 	global spawn_id
-	if {[regexp "rhlte" $host]} {
-		set ftp_cmd "lftp ftp3.linux.ibm.com"
-		spawn ssh root@$host
-	} elseif {[regexp "lslte" $host]} {
-		set ftp_cmd "ftp ftp3.linux.ibm.com"
-		set lslte 1
-		spawn ssh lte@$host
-	}
 
-	expect_after {
-		timeout {
-			upvar host host
-			puts "timeout when try to connect_to $host."
-			if {[info exists expect_out(buffer)]} {
-				puts "Context: $expect_out(buffer)"
+	set methods_list [list {lftp ftp3.linux.ibm.com} {interact_ftp ""} \
+				{ssh root@rhlte} {login;interact_ftp "lftp ftp3.linux.ibm.com"} \
+				{ssh lte@lslte} {login;send "su -\r";login;interact_ftp "ftp ftp3.linux.ibm.com"}]
+
+	
+
+	foreach {method code} $methods_list {
+		eval spawn $method
+		expect_after {
+			timeout {
+				puts "timeout when try to connect_to_ftp3."
+				if {[info exists expect_out(buffer)]} {
+					puts "Context: $expect_out(buffer)"
+				}
+				close
+				wait
+				return -code continue
 			}
-			close
-			wait
-			# return a exception
-			return -code error "timeout to connect."
-		}
-		eof {
-			upvar host host
-			puts "Connection to $host closed."
-			if {[info exists expect_out(buffer)]} {
-				puts "Context: $expect_out(buffer)"
+			eof {
+				puts "Connection closed when connect_to_ftp3."
+				if {[info exists expect_out(buffer)]} {
+					puts "Context: $expect_out(buffer)"
+				}
+				return -code continue
 			}
-			# return a exception
-			return -code error "connection closed."
 		}
+		eval $code
+		return -code ok
 	}
 
-	login
-	if {[info exists lslte]} {
-		send "su -\r"
-		login
-	}
-	interact_ftp $ftp_cmd
-
-	return 1
+	return -code error
 }
+
 	
 # get the new ISO's info
 proc get_iso_info {} {
 	global iso_path iso_num
 
-	# try to connect to server ...
-	if {[catch {connect_to "rhlte"} result]} { # try rhlte first
-		puts "Debug: $result"
-		if {[catch {connect_to "lslte"} result]} { # then lslte second
-			puts "Connect to server failed: $result"
-			exit
-		}
+	if {[catch {connect_to_ftp3} result]} {
+		puts "Connect to ftp3 failed: $result."
+		exit
 	}
 
 	interact
