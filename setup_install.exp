@@ -35,7 +35,7 @@ proc login {} {
 proc interact_ftp {cmd} {
 	send "$cmd\r"
 	expect {
-		"> \$" {
+		"@*> \$" {
 			puts "Notes: please try to find the new ISO's info,"
 			puts "and try to setup some varibles:"
 			puts "iso_path: set iso_path {/redhat/beta_cds/rhel5/rhel5-ftp-CD\$i.iso}"
