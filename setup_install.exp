@@ -12,12 +12,15 @@ switch -- [lindex $argv 0] {
 	}
 }
 
-#set timeout 5
+set timeout 30
 log_user 0
+exp_internal -f /tmp/setup_install.log 0
 
 # global variables
-set iso_path ""
+set ftp_iso_path ""
 set iso_num 0
+set serv_iso_dir ""
+set serv_dist_dir ""
 
 # log in
 proc login {} {
@@ -26,7 +29,7 @@ proc login {} {
 			send "don2rry\r"
 			exp_continue
 		}
-		-re "# \$|> \$"
+		-re "\\\$ \$|# \$|> \$"
 	}
 }
 
@@ -36,13 +39,9 @@ proc interact_ftp {cmd} {
 	send "$cmd\r"
 	expect {
 		"@*> \$" {
-			puts "Notes: please try to find the new ISO's info,"
-			puts "and try to setup some varibles:"
-			puts "iso_path: set iso_path {/redhat/beta_cds/rhel5/rhel5-ftp-CD\$i.iso}"
-			puts "iso_num: set iso_num 6"
+			send "\r"
 		}
 	}
-	send "\r"
 }
 
 #
@@ -63,6 +62,7 @@ proc connect_to_ftp3 {} {
 				if {[info exists expect_out(buffer)]} {
 					puts "Context: $expect_out(buffer)"
 				}
+				puts "Will continue ..."
 				close
 				wait
 				return -code continue
@@ -72,6 +72,7 @@ proc connect_to_ftp3 {} {
 				if {[info exists expect_out(buffer)]} {
 					puts "Context: $expect_out(buffer)"
 				}
+				puts "Will continue ..."
 				return -code continue
 			}
 		}
@@ -85,19 +86,158 @@ proc connect_to_ftp3 {} {
 	
 # get the new ISO's info
 proc get_iso_info {} {
-	global iso_path iso_num
+	global ftp_iso_path iso_num
 
 	if {[catch {connect_to_ftp3} result]} {
 		puts "Connect to ftp3 failed: $result."
 		exit
 	}
 
-	interact
+	puts "You will enter interactly mode. Please search new ISO's info, "
+	puts "and set some variables when drop out."
+	send "\r"
 
-	interpreter
+	interact
+	set timeout -1
+	puts "Please give me the ISO's number: "
+	expect_user -re "(.*)\n" {set iso_num $expect_out(1,string)}
+	puts "Please give me the ISO's path on the ftp server: "
+	expect_user -re "(.*)\n" {set ftp_iso_path $expect_out(1,string)}
+}
+
+# login the server and setup dirs
+proc setup_serv_dirs {} {
+	global spawn_id install_srv serv_iso_dir serv_dist_dir
+	spawn ssh lte@$install_srv
+	expect_after {
+		timeout {
+			puts "Timeout in setup_serv_dirs."
+			if {[info exists expect_out(buffer)]} {
+				puts "Context: $expect_out(buffer)"
+			}
+			close
+			wait
+			exit
+		}
+		eof {
+			puts "Connection closed in setup_serv_dirs."
+			if {[info exists expect_out(buffer)]} {
+				puts "Context: $expect_out(buffer)"
+			}
+			exit
+		}
+	}
+	login
+	send "su -\r"
+	login
+
+	puts "You will enter interactly mode. Please setup the dirs, "
+	puts "and set some variables when drop out."
+	send "\r"
+
+	interact
+	set timeout -1
+	puts "Please give me the path of ISOs on the installation server: "
+	expect_user -re "(.*)\n" {set serv_iso_dir $expect_out(1,string)}
+	puts "Please give me the path of dist on the installation server: "
+	expect_user -re "(.*)\n" {set serv_dist_dir $expect_out(1,string)}
+}
+
+proc download_iso {} {
+	global install_srv serv_iso_dir ftp_iso_path iso_num variable_id_list
+	
+	puts "Trying to download the ISOs ..."
+
+	for {set i 1} {$i <= $iso_num} {incr i} {
+		spawn ssh lte@$install_srv
+		set id$i $spawn_id
+		lappend constant_id_list $spawn_id
+		set no($spawn_id) $i
+	}
+
+	set variable_id_list $constant_id_list
+
+	# the "# \$" must be matched after the '-re "\n(.+)\r\[^\r]+# \$"'
+	expect_after {
+		timeout {
+			# timeout doesn't tie with any process
+			puts "timeout in download_iso."
+			exit
+		}
+		-i variable_id_list 
+		eof {
+			eval set n \$no($expect_out(spawn_id))
+			puts "Connection closed when try to download the No.$n ISO."
+			if {[info exists expect_out(buffer)]} {
+				puts "Context: $expect_out(buffer)."
+			}
+
+			exit
+		}
+		"# \$" {
+			# whether should continue
+			set i [lsearch $variable_id_list $expect_out(spawn_id)]
+			set variable_id_list [lreplace $variable_id_list $i $i]
+			if [llength $variable_id_list] exp_continue
+		}
+	}
+
+	# login & su
+	set variable_id_list $constant_id_list
+	expect {
+		-i variable_id_list
+		"assword: " {
+			send -i $expect_out(spawn_id) "don2rry\r"
+			exp_continue
+		}
+		-re "\\\$ \$|> \$" {
+			send -i $expect_out(spawn_id) "su -\r"
+			exp_continue
+		}
+	}
+
+	# 
+	send -i $constant_id_list "stty -echo\r"
+	set variable_id_list $constant_id_list
+	expect 
+
+	# download
+	set timeout -1
+	for {set i 1} {$i <= $iso_num} {incr i} {
+		eval set id \$id$i
+		eval set path $ftp_iso_path
+		send -i $id "cd $serv_iso_dir && wget -q ftp://ftp3.linux.ibm.com/$path;echo \$?\r"
+	}
+
+	# monitor
+	set variable_id_list $constant_id_list
+	expect {
+		-i variable_id_list 
+		-re "\n(.+)\r\[^\r]+# \$" {
+
+			eval set n \$no($expect_out(spawn_id))
+
+			if {$expect_out(1,string) != "0"} {
+				puts "Failed to download the the No.$n ISO."
+				puts "Context: $expect_out(buffer)."
+			} else {
+				puts "Download the No.$n ISO succeed!"
+			}
+			close -i $expect_out(spawn_id)
+			wait -i $expect_out(spawn_id)
+
+			# whether should continue
+			set i [lsearch $variable_id_list $expect_out(spawn_id)]
+			set variable_id_list [lreplace $variable_id_list $i $i]
+			if [llength $variable_id_list] exp_continue
+		}
+	}
+
+	puts "ISOs downloading succeeded!"
+	return -code ok
 }
 
 get_iso_info
-
-puts "$iso_path"
-puts "$iso_num"
+setup_serv_dirs
+download_iso
+#setup_install_serv
