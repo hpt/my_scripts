@@ -2,6 +2,7 @@
 # puts color
 proc blue_p {msg} {
 	# color
+	# it would be '^[[34;01m' & '^[[0m' in the bash
 	set BLUE "\[34;01m"
 	set OFF "\[0m"
 
@@ -248,6 +249,7 @@ proc download_iso {} {
 			if {$expect_out(1,string) != "0"} {
 				blue_p "Failed to download the the No.$n ISO."
 				blue_p "Context: $expect_out(buffer)."
+				set dl_f "failed"
 			} else {
 				blue_p "Download the No.$n ISO succeed!"
 			}
@@ -261,6 +263,9 @@ proc download_iso {} {
 		}
 	}
 
+	if [info exists dl_f] {
+		exit
+	}
 	blue_p "ISOs downloading succeeded!"
 	return -code ok
 }
