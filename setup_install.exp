@@ -18,6 +18,7 @@ exp_internal -f /tmp/setup_install.log 0
 
 # global variables
 set ftp_iso_path ""
+set iso_md5_path ""
 set iso_num 0
 set serv_iso_dir ""
 set serv_dist_dir ""
@@ -41,6 +42,18 @@ proc interact_ftp {cmd} {
 		"@*> \$" {
 			send "\r"
 		}
+	}
+}
+
+proc are_you_sure {} {
+
+	puts "Are you sure?\[y/n]"
+	expect_user -re "(.*)\n" {
+		if [string equal -nocase $expect_out(1,string) "y"] {
+			return -code ok
+		}
+		puts "Please try again ..."
+		exit
 	}
 }
 
@@ -86,7 +99,7 @@ proc connect_to_ftp3 {} {
 	
 # get the new ISO's info
 proc get_iso_info {} {
-	global ftp_iso_path iso_num
+	global ftp_iso_path iso_num iso_md5_path
 
 	if {[catch {connect_to_ftp3} result]} {
 		puts "Connect to ftp3 failed: $result."
@@ -103,6 +116,10 @@ proc get_iso_info {} {
 	expect_user -re "(.*)\n" {set iso_num $expect_out(1,string)}
 	puts "Please give me the ISO's path on the ftp server: "
 	expect_user -re "(.*)\n" {set ftp_iso_path $expect_out(1,string)}
+	puts "Please gvie me the ISO's md5sum file's path on the ftp server: "
+	expect_user -re "(.*)\n" {set iso_md5_path $expect_out(1,string)}
+
+	are_you_sure
 }
 
 # login the server and setup dirs
@@ -141,6 +158,8 @@ proc setup_serv_dirs {} {
 	expect_user -re "(.*)\n" {set serv_iso_dir $expect_out(1,string)}
 	puts "Please give me the path of dist on the installation server: "
 	expect_user -re "(.*)\n" {set serv_dist_dir $expect_out(1,string)}
+	
+	are_you_sure
 }
 
 proc download_iso {} {
