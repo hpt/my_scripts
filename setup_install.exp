@@ -1,4 +1,13 @@
 #!/usr/bin/expect --
+# puts color
+proc blue_p {msg} {
+	# color
+	set BLUE "\[34;01m"
+	set OFF "\[0m"
+
+	puts "$BLUE$msg$OFF"
+}
+
 switch -- [lindex $argv 0] {
 	"suse" {
 		set install_srv "lslte"
@@ -7,7 +16,7 @@ switch -- [lindex $argv 0] {
 		set install_srv "rhlte"
 	}
 	default {
-		puts "Usage: $argv0 <suse|redhat>"
+		blue_p "Usage: $argv0 <suse|redhat>"
 		exit
 	}
 }
@@ -47,12 +56,12 @@ proc interact_ftp {cmd} {
 
 proc are_you_sure {} {
 
-	puts "Are you sure?\[y/n]"
+	blue_p "Are you sure?\[y/n]"
 	expect_user -re "(.*)\n" {
 		if [string equal -nocase $expect_out(1,string) "y"] {
 			return -code ok
 		}
-		puts "Please try again ..."
+		blue_p "Please try again ..."
 		exit
 	}
 }
@@ -71,21 +80,21 @@ proc connect_to_ftp3 {} {
 		eval spawn $method
 		expect_after {
 			timeout {
-				puts "timeout when try to connect_to_ftp3."
+				blue_p "timeout when try to connect_to_ftp3."
 				if {[info exists expect_out(buffer)]} {
-					puts "Context: $expect_out(buffer)"
+					blue_p "Context: $expect_out(buffer)"
 				}
-				puts "Will continue ..."
+				blue_p "Will continue ..."
 				close
 				wait
 				return -code continue
 			}
 			eof {
-				puts "Connection closed when connect_to_ftp3."
+				blue_p "Connection closed when connect_to_ftp3."
 				if {[info exists expect_out(buffer)]} {
-					puts "Context: $expect_out(buffer)"
+					blue_p "Context: $expect_out(buffer)"
 				}
-				puts "Will continue ..."
+				blue_p "Will continue ..."
 				return -code continue
 			}
 		}
@@ -102,21 +111,21 @@ proc get_iso_info {} {
 	global ftp_iso_path iso_num iso_md5_path
 
 	if {[catch {connect_to_ftp3} result]} {
-		puts "Connect to ftp3 failed: $result."
+		blue_p "Connect to ftp3 failed: $result."
 		exit
 	}
 
-	puts "You will enter interactly mode. Please search new ISO's info, "
-	puts "and set some variables when drop out."
+	blue_p "You will enter interactly mode. Please search new ISO's info, "
+	blue_p "and set some variables when drop out."
 	send "\r"
 
 	interact
 	set timeout -1
-	puts "Please give me the ISO's number: "
+	blue_p "Please give me the ISO's number: "
 	expect_user -re "(.*)\n" {set iso_num $expect_out(1,string)}
-	puts "Please give me the ISO's path on the ftp server: "
+	blue_p "Please give me the ISO's path on the ftp server: "
 	expect_user -re "(.*)\n" {set ftp_iso_path $expect_out(1,string)}
-	puts "Please gvie me the ISO's md5sum file's path on the ftp server: "
+	blue_p "Please gvie me the ISO's md5sum file's path on the ftp server: "
 	expect_user -re "(.*)\n" {set iso_md5_path $expect_out(1,string)}
 
 	are_you_sure
@@ -128,18 +137,18 @@ proc setup_serv_dirs {} {
 	spawn ssh lte@$install_srv
 	expect_after {
 		timeout {
-			puts "Timeout in setup_serv_dirs."
+			blue_p "Timeout in setup_serv_dirs."
 			if {[info exists expect_out(buffer)]} {
-				puts "Context: $expect_out(buffer)"
+				blue_p "Context: $expect_out(buffer)"
 			}
 			close
 			wait
 			exit
 		}
 		eof {
-			puts "Connection closed in setup_serv_dirs."
+			blue_p "Connection closed in setup_serv_dirs."
 			if {[info exists expect_out(buffer)]} {
-				puts "Context: $expect_out(buffer)"
+				blue_p "Context: $expect_out(buffer)"
 			}
 			exit
 		}
@@ -148,15 +157,15 @@ proc setup_serv_dirs {} {
 	send "su -\r"
 	login
 
-	puts "You will enter interactly mode. Please setup the dirs, "
-	puts "and set some variables when drop out."
+	blue_p "You will enter interactly mode. Please setup the dirs, "
+	blue_p "and set some variables when drop out."
 	send "\r"
 
 	interact
 	set timeout -1
-	puts "Please give me the path of ISOs on the installation server: "
+	blue_p "Please give me the path of ISOs on the installation server: "
 	expect_user -re "(.*)\n" {set serv_iso_dir $expect_out(1,string)}
-	puts "Please give me the path of dist on the installation server: "
+	blue_p "Please give me the path of dist on the installation server: "
 	expect_user -re "(.*)\n" {set serv_dist_dir $expect_out(1,string)}
 	
 	are_you_sure
@@ -165,7 +174,7 @@ proc setup_serv_dirs {} {
 proc download_iso {} {
 	global install_srv serv_iso_dir ftp_iso_path iso_num variable_id_list
 	
-	puts "Trying to download the ISOs ..."
+	blue_p "Trying to download the ISOs ..."
 
 	for {set i 1} {$i <= $iso_num} {incr i} {
 		spawn ssh lte@$install_srv
@@ -180,15 +189,15 @@ proc download_iso {} {
 	expect_after {
 		timeout {
 			# timeout doesn't tie with any process
-			puts "timeout in download_iso."
+			blue_p "timeout in download_iso."
 			exit
 		}
 		-i variable_id_list 
 		eof {
 			eval set n \$no($expect_out(spawn_id))
-			puts "Connection closed when try to download the No.$n ISO."
+			blue_p "Connection closed when try to download the No.$n ISO."
 			if {[info exists expect_out(buffer)]} {
-				puts "Context: $expect_out(buffer)."
+				blue_p "Context: $expect_out(buffer)."
 			}
 
 			exit
@@ -237,10 +246,10 @@ proc download_iso {} {
 			eval set n \$no($expect_out(spawn_id))
 
 			if {$expect_out(1,string) != "0"} {
-				puts "Failed to download the the No.$n ISO."
-				puts "Context: $expect_out(buffer)."
+				blue_p "Failed to download the the No.$n ISO."
+				blue_p "Context: $expect_out(buffer)."
 			} else {
-				puts "Download the No.$n ISO succeed!"
+				blue_p "Download the No.$n ISO succeed!"
 			}
 			close -i $expect_out(spawn_id)
 			wait -i $expect_out(spawn_id)
@@ -252,7 +261,7 @@ proc download_iso {} {
 		}
 	}
 
-	puts "ISOs downloading succeeded!"
+	blue_p "ISOs downloading succeeded!"
 	return -code ok
 }
 
