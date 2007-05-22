@@ -33,6 +33,9 @@ set iso_num 0
 set serv_iso_dir ""
 set serv_dist_dir ""
 
+# try to get $?
+set status_prompt "\n(\[^\r]+)\r\[^\r]+# \$"
+
 # log in
 proc login {} {
 	expect {
@@ -55,15 +58,27 @@ proc interact_ftp {cmd} {
 	}
 }
 
-proc are_you_sure {} {
+# display a yes or on question and ...
+proc are_you_sure {question} {
+	# 
+	set old_mode [stty raw]
 
-	blue_p "Are you sure?\[y/n]"
-	expect_user -re "(.*)\n" {
-		if [string equal -nocase $expect_out(1,string) "y"] {
-			return -code ok
+	blue_p "$question\[y/n]"
+	expect_user {
+		-re "\[Yy]|\[Nn]" {
+			stty $old_mode
+			if [string match -nocase "*y*" $expect_out(buffer)] {
+				blue_p "\nContinue ..."
+				return -code ok
+			}
+			blue_p "\nPlease try again ..."
+			exit
 		}
-		blue_p "Please try again ..."
-		exit
+		timeout {
+			blue_p "\nTimeout when waiting for your confirmation."
+			blue_p "Please try again"
+			exit
+		}
 	}
 }
 
@@ -129,7 +144,7 @@ proc get_iso_info {} {
 	blue_p "Please gvie me the ISO's md5sum file's path on the ftp server: "
 	expect_user -re "(.*)\n" {set iso_md5_path $expect_out(1,string)}
 
-	are_you_sure
+	are_you_sure "Are you sure?"
 }
 
 # login the server and setup dirs
@@ -169,11 +184,11 @@ proc setup_serv_dirs {} {
 	blue_p "Please give me the path of dist on the installation server: "
 	expect_user -re "(.*)\n" {set serv_dist_dir $expect_out(1,string)}
 	
-	are_you_sure
+	are_you_sure "Are you sure?"
 }
 
 proc download_iso {} {
-	global install_srv serv_iso_dir ftp_iso_path iso_num variable_id_list
+	global install_srv serv_iso_dir ftp_iso_path iso_num variable_id_list status_prompt
 	
 	blue_p "Trying to download the ISOs ..."
 
@@ -186,7 +201,7 @@ proc download_iso {} {
 
 	set variable_id_list $constant_id_list
 
-	# the "# \$" must be matched after the '-re "\n(.+)\r\[^\r]+# \$"'
+	# the "# \$" must be matched after the '-re "$status_prompt"'
 	expect_after {
 		timeout {
 			# timeout doesn't tie with any process
@@ -242,7 +257,7 @@ proc download_iso {} {
 	set variable_id_list $constant_id_list
 	expect {
 		-i variable_id_list 
-		-re "\n(.+)\r\[^\r]+# \$" {
+		-re "$status_prompt" {
 
 			eval set n \$no($expect_out(spawn_id))
 
@@ -270,7 +285,69 @@ proc download_iso {} {
 	return -code ok
 }
 
+proc check_iso_md5sum {} {
+	global serv_iso_dir iso_md5_path iso_num status_prompt
+
+	blue_p "Try to checksum the ISOs ..."
+
+	set timeout -1
+	send "cd $serv_iso_dir && wget -q ftp://ftp3.linux.ibm.com/$iso_md5_path; echo \$?\r"
+	expect {
+		-re "$status_prompt" {
+			if {$expect_out(1,string) != 0} {
+				blue_p "Failed to download the md5sum file."
+				blue_p "Context: $expect_out(buffer)"
+				exit
+			}
+		}
+	}
+
+	set md5sum [lindex [split $iso_md5_path "/"] end] 
+
+	send "stty -echo\r"
+	expect "# \$"
+
+	set old_log_user [log_user -info]
+	log_user 1
+	send "md5sum -c $md5sum 2>&1 |{ while read line;do buf=\"\$line\\n\$buf\";echo \$line;done;echo -n -e \"\$buf\"|grep OK|wc -l; }\r"
+	expect {
+		-re "$status_prompt" {
+			if {$expect_out(1,string) != $iso_num} {
+				blue_p "md5sum checking failed!"
+				are_you_sure "Continue?"
+				exit
+			}
+		}
+	}
+	log_user $old_log_user
+
+	blue_p "md5sum checking succeed!"
+}
+
 get_iso_info
 setup_serv_dirs
 download_iso
+
+# login & su
+spawn ssh lte@$install_srv
+expect_after {
+	timeout {
+		blue_p "timeout when trying to login the $install_srv."
+		exit
+	}
+	eof {
+		blue_p "Connection closed when trying to login $install_srv."
+		exit
+	}
+}
+login
+send "su -\r"
+login
+
+#set serv_iso_dir "/images/ppc/redhat/autodownload/"
+#set iso_md5_path "/redhat/beta_cds/RHEL39-Beta/ppc/SRPMS/MD5SUMS"
+#set iso_num 3
+
+check_iso_md5sum
+
 #setup_install_serv
