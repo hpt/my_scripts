@@ -66,7 +66,7 @@ proc are_you_sure {question} {
 	blue_p "$question\[y/n]"
 	expect_user {
 		-re "\[Yy]|\[Nn]" {
-			stty $old_mode
+			eval stty $old_mode
 			if [string match -nocase "*y*" $expect_out(buffer)] {
 				blue_p "\nContinue ..."
 				return -code ok
