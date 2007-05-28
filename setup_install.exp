@@ -323,6 +323,54 @@ proc check_iso_md5sum {} {
 	log_user $old_log_user
 }
 
+#
+proc copy_isos {} {
+	global iso_num serv_iso_dir serv_dist_dir ftp_iso_path status_prompt
+
+	send "cd $serv_iso_dir && for i in \$(seq 1 $iso_num);do mkdir \$i;done;echo $?\r"
+	expect -re "$status_prompt" {
+		if { $expect_out(1,string) != 0 } {
+			blue_p "Failed to mkdir mountpoint."
+			blue_p "Context: $expect_out(buffer)"
+			exit
+		}
+	}
+
+	set iso_pattern [lindex [split $ftp_iso_path "/"] end]
+	send "for i in \$(seq 1 $iso_num);do mount -o loop $iso_pattern \$i;done;echo \$?\r"
+	expect -re $status_prompt {
+		if {$expect_out(1,string) != 0} {
+			blue_p "Failed to mount the ISOs."
+			blue_p "Context: $expect_out(buffer)"
+			exit
+		}
+	}
+
+	set timeout -1
+	switch -- [lindex $argv 0] {
+		"redhat" {
+			send "for i in \$(seq 1 $iso_num);do \\cp -a \$i/* $serv_dist_dir;done;echo \$?\r"
+		}
+		"suse" {
+			send "for i in \$(seq 1 $iso_num);do mkdir $serv_dist_dir/CD\$i;\\cp -a \$i/* $serv_dist_dir/CD\$i;done;echo \$?\r"
+		}
+		default {
+			blue_p "Shouldn't happen!"
+			blue_p "exit..."
+			exit
+		}
+
+	}
+
+	expect -re "$status_prompt" {
+		if {$expect_out(1,string) != 0} {
+			blue_p "Failed to copy the ISOs."
+			blue_p "Context: $expect_out(buffer)"
+			exit
+		}
+	}
+}
+
 get_iso_info
 setup_serv_dirs
 download_iso
@@ -348,5 +396,7 @@ login
 #set iso_num 3
 
 check_iso_md5sum
+
+copy_isos
 
 #setup_install_serv
