@@ -325,8 +325,9 @@ proc check_iso_md5sum {} {
 
 #
 proc copy_isos {} {
-	global iso_num serv_iso_dir serv_dist_dir ftp_iso_path status_prompt
+	global iso_num serv_iso_dir serv_dist_dir ftp_iso_path status_prompt install_srv
 
+	blue_p "Trying build up mount point ..."
 	send "cd $serv_iso_dir && for i in \$(seq 1 $iso_num);do mkdir \$i;done;echo $?\r"
 	expect -re "$status_prompt" {
 		if { $expect_out(1,string) != 0 } {
@@ -336,6 +337,7 @@ proc copy_isos {} {
 		}
 	}
 
+	blue_p "Trying mount ISOs ..."
 	set iso_pattern [lindex [split $ftp_iso_path "/"] end]
 	send "for i in \$(seq 1 $iso_num);do mount -o loop $iso_pattern \$i;done;echo \$?\r"
 	expect -re $status_prompt {
@@ -346,12 +348,13 @@ proc copy_isos {} {
 		}
 	}
 
+	blue_p "Trying copy ISOs ..."
 	set timeout -1
-	switch -- [lindex $argv 0] {
-		"redhat" {
+	switch -- $install_srv {
+		"rhlte" {
 			send "for i in \$(seq 1 $iso_num);do \\cp -a \$i/* $serv_dist_dir;done;echo \$?\r"
 		}
-		"suse" {
+		"lslte" {
 			send "for i in \$(seq 1 $iso_num);do mkdir $serv_dist_dir/CD\$i;\\cp -a \$i/* $serv_dist_dir/CD\$i;done;echo \$?\r"
 		}
 		default {
@@ -365,6 +368,27 @@ proc copy_isos {} {
 	expect -re "$status_prompt" {
 		if {$expect_out(1,string) != 0} {
 			blue_p "Failed to copy the ISOs."
+			blue_p "Context: $expect_out(buffer)"
+			exit
+		}
+	}
+	blue_p "Copying ISOs succeed!"
+
+	#
+	blue_p "Umount the ISOs ...."
+	send "umount \$(seq 1 $iso_num);echo \$?\r"
+	expect -re "$status_prompt" {
+		if {$expect_out(1,string) != 0} {
+			blue_p "Failed to umount the ISOs."
+			blue_p "Context: $expect_out(buffer)"
+			exit
+		}
+	}
+	blue_p "Remove the mountpoint ..."
+	send "rmdir \$(seq 1 $iso_num);echo \$?\r"
+	expect -re "$status_prompt" {
+		if {$expect_out(1,string) != 0} {
+			blue_p "Failed to remove the mountpoint."
 			blue_p "Context: $expect_out(buffer)"
 			exit
 		}
@@ -392,8 +416,10 @@ send "su -\r"
 login
 
 #set serv_iso_dir "/images/ppc/redhat/autodownload/"
-#set iso_md5_path "/redhat/beta_cds/RHEL39-Beta/ppc/SRPMS/MD5SUMS"
+##set iso_md5_path "/redhat/beta_cds/RHEL39-Beta/ppc/SRPMS/MD5SUMS"
 #set iso_num 3
+#set ftp_iso_path "/images/ppc/redhat/autodownload/RHEL3-U9-re20070421.0-ppc-variant-src-disc\$i.iso"
+#set serv_dist_dir "/tmp/autodownload_test"
 
 check_iso_md5sum
 
