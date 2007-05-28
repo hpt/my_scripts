@@ -315,13 +315,12 @@ proc check_iso_md5sum {} {
 			if {$expect_out(1,string) != $iso_num} {
 				blue_p "md5sum checking failed!"
 				are_you_sure "Continue?"
-				exit
+			} else {
+				blue_p "md5sum checking succeed!"
 			}
 		}
 	}
 	log_user $old_log_user
-
-	blue_p "md5sum checking succeed!"
 }
 
 get_iso_info
