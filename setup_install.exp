@@ -313,10 +313,10 @@ proc check_iso_md5sum {} {
 	expect {
 		-re "$status_prompt" {
 			if {$expect_out(1,string) != $iso_num} {
-				blue_p "md5sum checking failed!"
+				blue_p "\nmd5sum checking failed!"
 				are_you_sure "Continue?"
 			} else {
-				blue_p "md5sum checking succeed!"
+				blue_p "\nmd5sum checking succeed!"
 			}
 		}
 	}
