@@ -1,65 +1,92 @@
 #!/usr/bin/expect --
 # for passing through the local/remote BSO firewall
-#exp_internal 1
+#exp_internal -f /tmp/rw_debug 0
 
 log_user 0
-if {[regexp "rfw.exp" $argv0]} {
+
 spawn telnet uptwiki
-} elseif {[regexp "lfw.exp" $argv0]} {
+set rid $spawn_id
+
 spawn telnet plinuxsrv
+set lid $spawn_id
+
+set id_list [list $rid $lid]
+
+proc check {} {
+	global id_list rid lid location expect_out
+
+	if {$expect_out(spawn_id) == $rid} {
+		set location "remote"
+		set i [lsearch $id_list $rid]
+		set id_list [lreplace $id_list $i $i]
+	} else {
+		set location "local"
+		set i [lsearch $id_list $lid]
+		set id_list [lreplace $id_list $i $i]
+	}
 }
-#if {[regexp "rfw.exp" $argv0]} {
-#spawn ./test_rfw.exp
-#} elseif {[regexp "lfw.exp" $argv0]} {
-#spawn ./test_lfw.exp
-#}
+
+proc if_continue {} {
+	global id_list
+	if [llength $id_list] exp_continue
+}
+
+expect_after {
+	-i id_list
+	timeout {
+		puts "Timeouted when try to go through the firewall."
+		puts "Please try again."
+		exit 1
+	}
+}
 
 expect {
-"login: " {
-	send_user "Seems that firewall had been past.\n"
-	close
-	wait
-	exit
-}
-"Username: " {
-	send "hanpt@cn.ibm.com\r"
-	exp_continue
-}
-"Password: " {
-	stty -echo
-	send_user "Please input your internat password: "
-	expect_user  {
-		-re "(\[^\n]*)\n" {send_user "\n"}
-		timeout {
-			send_user "Forget your password?\n"
-			close
-			wait
-			exit
-		}
+	-i id_list
+	"login: " {
+		check
+		send_user "Seems that $location firewall had been past.\n"
+		close -i $expect_out(spawn_id)
+		wait -i $expect_out(spawn_id)
+		if_continue
 	}
-	send "$expect_out(1,string)\r"
-	stty echo
-	exp_continue
+	"Username: " {
+		send "hanpt@cn.ibm.com\r"
+		exp_continue
+	}
+	"Password: " {
+		stty -echo
+		if ![info exists passwd] {
+			send_user "Please input your internat password: "
+			expect_user  {
+				-re "(\[^\n]*)\n" {send_user "\n"}
+				timeout {
+					send_user "Forget your password?\n"
+					exit
+				}
+			}
+			set passwd $expect_out(1,string)
+		} 
+		send "$passwd\r"
+		stty echo
+		exp_continue
+	}
+	"Successful" {
+		check
+		send_user "Passing through $location BSO successfully\n"
+		close -i $expect_out(spawn_id)
+		wait -i $expect_out(spawn_id)
+		if_continue
+	}
+	"Try Again" {
+		check
+		send_user "Authentication failed to $location BSO, please try again.\n"
+		close -i $expect_out(spawn_id)
+		wait -i $expect_out(spawn_id)
+		if_continue
+	}
+	eof {
+		check
+		send_user "telnet to $location BSO closed, please try again.\n"
+		if_continue
+	}
 }
-"Successful" {
-	send_user "Passing through BSO successfully\n"
-	close
-	wait
-	exit
-}
-"Try Again" {
-	send_user "Authentication Error Please Try Again.\n"
-	close
-	wait
-	exit
-}
-eof {
-	send_user "telnent closes the connection.\n"
-	exit
-}
-timeout {
-	send_user "timeout for telneting to server.\n"
-	exit
-}
-}
-
