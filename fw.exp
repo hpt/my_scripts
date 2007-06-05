@@ -50,10 +50,11 @@ expect {
 		if_continue
 	}
 	"Username: " {
-		send "hanpt@cn.ibm.com\r"
+		send -i $expect_out(spawn_id) "hanpt@cn.ibm.com\r"
 		exp_continue
 	}
 	"Password: " {
+		set waited_id $expect_out(spawn_id)
 		stty -echo
 		if ![info exists passwd] {
 			send_user "Please input your internat password: "
@@ -66,7 +67,7 @@ expect {
 			}
 			set passwd $expect_out(1,string)
 		} 
-		send "$passwd\r"
+		send -i $waited_id "$passwd\r"
 		stty echo
 		exp_continue
 	}
