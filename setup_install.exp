@@ -22,7 +22,7 @@ switch -- [lindex $argv 0] {
 	}
 }
 
-set timeout 30
+#set timeout 30
 log_user 0
 exp_internal -f /tmp/setup_install.log 0
 
@@ -150,12 +150,16 @@ proc get_iso_info {} {
 	are_you_sure "Are you sure?"
 }
 
-proc expect_after_messages {func_name} {
-	global expect_out
-
+proc expect_after_setup {} {
 	expect_after {
 		 timeout {
-			blue_p "Timeout in $func_name."
+			if [info level] {
+				set location "[info level 0]"
+			} else {
+				set location "main flow"
+			}
+
+			blue_p "Timeout in $location."
 			if {[info exists expect_out(buffer)]} {
 				blue_p "Context: $expect_out(buffer)"
 			}
@@ -164,7 +168,13 @@ proc expect_after_messages {func_name} {
 			exit
 		}
 		eof {
-			blue_p "Connection closed in $func_name."
+			if [info level] {
+				set location "[info level 0]"
+			} else {
+				set location "main flow"
+			}
+
+			blue_p "Connection closed in $location."
 			if {[info exists expect_out(buffer)]} {
 				blue_p "Context: $expect_out(buffer)"
 			}
@@ -176,8 +186,6 @@ proc expect_after_messages {func_name} {
 # login the server and setup dirs
 proc setup_serv_dirs {} {
 	global install_srv serv_iso_dir serv_dist_dir
-
-	expect_after_messages setup_serv_dirs
 
 	blue_p "You will enter interactly mode. Please setup the dirs:"
 	blue_p "1. The dir for new ISOs;"
@@ -214,12 +222,12 @@ proc download_iso {} {
 
 	# the "# \$" must be matched after the '-re "$status_prompt"'
 	expect_after {
+		-i variable_id_list 
 		timeout {
 			# timeout doesn't tie with any process
 			blue_p "timeout in download_iso."
 			exit
 		}
-		-i variable_id_list 
 		eof {
 			eval set n \$no($expect_out(spawn_id))
 			blue_p "Connection closed when try to download the No.$n ISO."
@@ -301,8 +309,6 @@ proc check_iso_md5sum {} {
 
 	blue_p "Try to checksum the ISOs ..."
 
-	expect_after_messages check_iso_md5sum
-
 	set timeout -1
 	send "cd $serv_iso_dir && wget -q ftp://ftp3.linux.ibm.com/$iso_md5_path; echo \$?\r"
 	expect {
@@ -334,13 +340,14 @@ proc check_iso_md5sum {} {
 		}
 	}
 	log_user $old_log_user
+
+	send "stty echo\r"
+	expect "# \$"
 }
 
 #
 proc copy_isos {} {
 	global iso_num serv_iso_dir serv_dist_dir ftp_iso_path status_prompt install_srv
-
-	expect_after_messages copy_isos
 
 	blue_p "Trying build up mount point ..."
 	send "cd $serv_iso_dir && for i in \$(seq 1 $iso_num);do mkdir \$i;done;echo $?\r"
@@ -414,16 +421,7 @@ get_iso_info
 
 # login & su
 spawn ssh lte@$install_srv
-expect_after {
-	timeout {
-		blue_p "timeout when trying to login the $install_srv."
-		exit
-	}
-	eof {
-		blue_p "Connection closed when trying to login $install_srv."
-		exit
-	}
-}
+expect_after_setup
 login
 send "su -\r"
 login
@@ -432,7 +430,7 @@ setup_serv_dirs
 download_iso
 
 #set serv_iso_dir "/images/ppc/redhat/autodownload/"
-##set iso_md5_path "/redhat/beta_cds/RHEL39-Beta/ppc/SRPMS/MD5SUMS"
+#set iso_md5_path "/redhat/beta_cds/RHEL39-Beta/ppc/SRPMS/MD5SUMS"
 #set iso_num 3
 #set ftp_iso_path "/images/ppc/redhat/autodownload/RHEL3-U9-re20070421.0-ppc-variant-src-disc\$i.iso"
 #set serv_dist_dir "/tmp/autodownload_test"
