@@ -132,7 +132,10 @@ proc get_iso_info {} {
 	}
 
 	blue_p "You will enter interactly mode. Please search new ISO's info, "
-	blue_p "and set some variables when drop out."
+	blue_p "and set some variables when drop out:"
+	blue_p "1. The number of new ISOs;"
+	blue_p "2. The path of new ISOs;"
+	blue_p "3. The path of md5 checksum file."
 	send "\r"
 
 	interact
@@ -147,13 +150,12 @@ proc get_iso_info {} {
 	are_you_sure "Are you sure?"
 }
 
-# login the server and setup dirs
-proc setup_serv_dirs {} {
-	global spawn_id install_srv serv_iso_dir serv_dist_dir
-	spawn ssh lte@$install_srv
+proc expect_after_messages {func_name} {
+	global expect_out
+
 	expect_after {
-		timeout {
-			blue_p "Timeout in setup_serv_dirs."
+		 timeout {
+			blue_p "Timeout in $func_name."
 			if {[info exists expect_out(buffer)]} {
 				blue_p "Context: $expect_out(buffer)"
 			}
@@ -162,26 +164,35 @@ proc setup_serv_dirs {} {
 			exit
 		}
 		eof {
-			blue_p "Connection closed in setup_serv_dirs."
+			blue_p "Connection closed in $func_name."
 			if {[info exists expect_out(buffer)]} {
 				blue_p "Context: $expect_out(buffer)"
 			}
 			exit
 		}
 	}
-	login
-	send "su -\r"
-	login
+}
 
-	blue_p "You will enter interactly mode. Please setup the dirs, "
-	blue_p "and set some variables when drop out."
+# login the server and setup dirs
+proc setup_serv_dirs {} {
+	global install_srv serv_iso_dir serv_dist_dir
+
+	expect_after_messages setup_serv_dirs
+
+	blue_p "You will enter interactly mode. Please setup the dirs:"
+	blue_p "1. The dir for new ISOs;"
+	blue_p "2. The dir for install server to contain the contents of ISOs."
+	blue_p "After that, for continue of automation, please press \"~q\"."
+	blue_p "And please set some variables when drop out:"
+	blue_p "1. The path of the ISOs on installation server;"
+	blue_p "2. The path of contents of the ISOs should to go."
 	send "\r"
 
-	interact
+	interact ~q return
 	set timeout -1
 	blue_p "Please give me the path of ISOs on the installation server: "
 	expect_user -re "(.*)\n" {set serv_iso_dir $expect_out(1,string)}
-	blue_p "Please give me the path of dist on the installation server: "
+	blue_p "Please give me the path of dist's contents on the installation server: "
 	expect_user -re "(.*)\n" {set serv_dist_dir $expect_out(1,string)}
 	
 	are_you_sure "Are you sure?"
@@ -290,6 +301,8 @@ proc check_iso_md5sum {} {
 
 	blue_p "Try to checksum the ISOs ..."
 
+	expect_after_messages check_iso_md5sum
+
 	set timeout -1
 	send "cd $serv_iso_dir && wget -q ftp://ftp3.linux.ibm.com/$iso_md5_path; echo \$?\r"
 	expect {
@@ -326,6 +339,8 @@ proc check_iso_md5sum {} {
 #
 proc copy_isos {} {
 	global iso_num serv_iso_dir serv_dist_dir ftp_iso_path status_prompt install_srv
+
+	expect_after_messages copy_isos
 
 	blue_p "Trying build up mount point ..."
 	send "cd $serv_iso_dir && for i in \$(seq 1 $iso_num);do mkdir \$i;done;echo $?\r"
@@ -396,8 +411,6 @@ proc copy_isos {} {
 }
 
 get_iso_info
-setup_serv_dirs
-download_iso
 
 # login & su
 spawn ssh lte@$install_srv
@@ -415,6 +428,9 @@ login
 send "su -\r"
 login
 
+setup_serv_dirs
+download_iso
+
 #set serv_iso_dir "/images/ppc/redhat/autodownload/"
 ##set iso_md5_path "/redhat/beta_cds/RHEL39-Beta/ppc/SRPMS/MD5SUMS"
 #set iso_num 3
@@ -422,7 +438,8 @@ login
 #set serv_dist_dir "/tmp/autodownload_test"
 
 check_iso_md5sum
-
 copy_isos
+
+interact
 
 #setup_install_serv
