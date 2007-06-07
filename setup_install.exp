@@ -22,7 +22,7 @@ switch -- [lindex $argv 0] {
 	}
 }
 
-#set timeout 30
+set timeout 30
 log_user 0
 exp_internal -f /tmp/setup_install.log 0
 
@@ -196,7 +196,17 @@ proc setup_serv_dirs {} {
 	blue_p "2. The path of contents of the ISOs should to go."
 	send "\r"
 
-	interact ~q return
+	interact {
+		~q return
+		"\004" {
+			send_user "\nPlease use \"~q\" for continue automation.\n"
+			send_user "If want to input \"Ctrl-D\", please use \"~Ctrl-D\"."
+			send "\r"
+		}
+		"~\004" {
+			send "\004"
+		}
+	}
 	set timeout -1
 	blue_p "Please give me the path of ISOs on the installation server: "
 	expect_user -re "(.*)\n" {set serv_iso_dir $expect_out(1,string)}
