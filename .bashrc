@@ -91,7 +91,7 @@ while 1 {
 	# must give a 'timeout' or 'default' when autologin, see man expect
 	expect {
 	        timeout {
-	                puts \"timeout to $*\"
+	                puts {timeout to $*}
 	                exit 0
 	        }
 	        \"(yes/no)?\" {
