@@ -17,7 +17,6 @@ DEL="====="
 index=0
 while read buf
 do 
-	assign=
 	if [ "$buf" != "$DEL" ]
 	then 
 		if [ -z "$element" ]
@@ -30,11 +29,10 @@ do
 		array[$index]="$element"
 		((index++))
 		element=
-		assign="OK"
 	fi
 done
 
-if [ -z "$assign" ]
+if [ ! -z "$element" ]
 then
 	array[$index]="$element"
 fi
