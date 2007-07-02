@@ -1,0 +1,100 @@
+#!/usr/bin/expect --
+#exp_internal -f /tmp/log.out 0
+
+source recorder.tcl
+
+if {$argc != 1} {
+	puts "Usage: $argv0 machine_name"
+	puts "Which vterm do you want to connect?"
+	expect_user {
+		-re "(.*)\n" {
+			set argv [linsert $argv 0 $expect_out(1,string)]
+		}
+		timeout {
+			puts "You are too slow. Try again."
+			exit 1
+		}
+	}
+}
+
+if {! [info exists [lindex $argv 0]]} {
+	puts "Record cannot be found: [lindex $argv 0]"
+	exit 1
+}
+
+set hostname 	[lindex $argv 0]
+set cmd_line 	[eval lindex \$$hostname 0]
+set user_name 	[eval lindex \$$hostname 1]
+set passwd	[eval lindex \$$hostname 2]
+set rm_cmd	[eval lindex \$$hostname 3]
+set mk_cmd	[eval lindex \$$hostname 4]
+
+set timeout 30
+
+eval spawn $cmd_line
+
+expect_after {
+	timeout {
+		puts "Timeout!"
+	}
+	eof {
+		puts "Connection be closed!"
+		exit 1
+	}
+}
+
+if {0==[string first "ssh" $cmd_line]} { 
+	# ssh
+	while 1 {
+		expect {
+			"verification failed." {
+				close
+				wait
+				set hmc_name [string range $cmd_line [string first "@" $cmd_line] end]
+				exec sh -c ". ~/.bashrc;rsk $hmc_name"
+				eval spawn $cmd_line
+				continue
+			}
+			"onnection refuse" {
+				puts "Connection refused by hmc"
+				close
+				wait
+				exit 1
+			}
+			"(yes/no)?" {
+				send "yes\r"
+				exp_continue
+			}
+			"Password:" {
+				send "$passwd\r"
+				exp_continue
+			}
+			-re "\\$ $|~> $" {
+				send "$rm_cmd\r"
+				break
+			}
+		}
+	}
+} else {	
+	# telnet
+	expect {
+		"login: $" {
+			send "$user_name\r"
+			exp_continue
+		}
+		-re "padmin's Password: $|Password for hscroot: $" {
+			send "$passwd\r"
+			exp_continue
+		}
+		-re "\\$ $|~> $" {
+			send "$rm_cmd\r"
+		}
+	}
+}
+
+expect {
+	-re "\\$ $|~> $" {
+		send "$mk_cmd\r"
+	}
+}
+interact
