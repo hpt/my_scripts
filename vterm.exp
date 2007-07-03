@@ -87,14 +87,14 @@ if {0==[string first "ssh" $cmd_line]} {
 			exp_continue
 		}
 		
-		-re "\\$ $|~> $|system> $" {
+		-re "\\$ $|~> |system> $" {
 			send "$rm_cmd\r"
 		}
 	}
 }
 
 expect {
-	-re "\\$ $|~> $|system> $" {
+	-re "\\$ $|~> |system> $" {
 		send "$mk_cmd\r"
 	}
 }
