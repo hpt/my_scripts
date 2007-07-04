@@ -126,7 +126,7 @@ if {$RUN_COMMAND} {
 } else {
 	interact {
 		\"~~vi\" {
-			send \"set -o vi\r\"
+			send \"set -o emacs\r\"
 		}
 	}
 
