@@ -124,7 +124,12 @@ if {$RUN_COMMAND} {
 	set timeout -1
 	expect eof
 } else {
-	interact
+	interact {
+		\"~~vi\" {
+			send \"set -o vi\r\"
+		}
+	}
+
 }"
 }
 
