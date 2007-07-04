@@ -98,4 +98,8 @@ expect {
 		send "$mk_cmd\r"
 	}
 }
-interact
+interact {
+	"~~vi" {
+		send "set -o vi\r"
+	}
+}
