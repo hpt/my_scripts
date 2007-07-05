@@ -125,7 +125,7 @@ if {$RUN_COMMAND} {
 	expect eof
 } else {
 	interact {
-		\"~~vi\" {
+		\"\036es\" {	;# ctrl-~ es
 			send \"set -o emacs\r\"
 		}
 	}

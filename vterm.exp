@@ -99,7 +99,7 @@ expect {
 	}
 }
 interact {
-	"~~vi" {
+	"\036es" {	;# ctrl-~ es
 		send "set -o emacs\r"
 	}
 }
