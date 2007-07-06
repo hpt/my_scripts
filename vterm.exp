@@ -22,6 +22,10 @@ if {! [info exists [lindex $argv 0]]} {
 	exit 1
 }
 
+set login_prompt "login: $|username: $"
+set passwd_prompt "padmin's Password: $|Password for hscroot: $|password: $"
+set shell_prompt "\\$ $|~> |system> $"
+
 set hostname 	[lindex $argv 0]
 set cmd_line 	[eval lindex \$$hostname 0]
 set user_name 	[eval lindex \$$hostname 1]
@@ -78,23 +82,23 @@ if {0==[string first "ssh" $cmd_line]} {
 } else {	
 	# telnet
 	expect {
-		-re "login: $|username: $" {
+		-re $login_prompt {
 			send "$user_name\r"
 			exp_continue
 		}
-		-re "padmin's Password: $|Password for hscroot: $|password: $" {
+		-re $passwd_prompt {
 			send "$passwd\r"
 			exp_continue
 		}
 		
-		-re "\\$ $|~> |system> $" {
+		-re $shell_prompt {
 			send "$rm_cmd\r"
 		}
 	}
 }
 
 expect {
-	-re "\\$ $|~> |system> $" {
+	-re $shell_prompt {
 		send "$mk_cmd\r"
 	}
 }
