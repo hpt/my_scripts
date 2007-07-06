@@ -99,7 +99,10 @@ expect {
 	}
 }
 interact {
-	"\036es" {	;# ctrl-~ es
+	"\001a" {	;# how to input 'ctrl-a', learn from screen
+		send "\001"
+	}
+	"\001es" {	;# set emacs mode in bash
 		send "set -o emacs\r"
 	}
 }
