@@ -448,6 +448,8 @@ download_iso
 check_iso_md5sum
 copy_isos
 
+send "\r"
+
 interact
 
 #setup_install_serv
