@@ -1,5 +1,5 @@
 #!/usr/bin/expect --
-#exp_internal -f /tmp/log.out 0
+exp_internal -f /tmp/log.out 0
 
 source recorder.tcl
 
@@ -108,5 +108,24 @@ interact {
 	}
 	"\001es" {	;# set emacs mode in bash
 		send "set -o emacs\r"
+	}
+	"\001ofb" {	;# boot from o/f
+		send "dev /packages/gui obe\r"
+	}
+	"\001sms" {	;# try to enter sms
+		send_user "Trun on waiting for dropping into o/f\n"
+		interact {
+			"\001q" {
+				send_user "Trun off waiting for dropping into o/f\n"
+				return
+			}
+			-o eof {
+				inter_return
+			}
+			-re "Memory.*Keyboard.*Network.*SCSI" {
+				send "1\r"
+				return
+			}
+		}
 	}
 }
