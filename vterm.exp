@@ -122,7 +122,7 @@ interact {
 			-o eof {
 				inter_return
 			}
-			-re "Memory.*Keyboard.*Network.*SCSI" {
+			-nobuffer -re "Memory.*Keyboard.*Network.*SCSI" {
 				send "1\r"
 				return
 			}
