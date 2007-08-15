@@ -113,6 +113,22 @@ interact {
 		send "dev /packages/gui obe\r"
 	}
 	"\001sms" {	;# try to enter sms
+		send_user "Trun on waiting for dropping into sms\n"
+		interact {
+			"\001q" {
+				send_user "Trun off waiting for dropping into sms\n"
+				return
+			}
+			-o eof {
+				inter_return
+			}
+			-nobuffer -re "Memory.*Keyboard.*Network.*SCSI" {
+				send "1\r"
+				return
+			}
+		}
+	}
+	"\001of" {	;# try to enter of
 		send_user "Trun on waiting for dropping into o/f\n"
 		interact {
 			"\001q" {
@@ -123,7 +139,7 @@ interact {
 				inter_return
 			}
 			-nobuffer -re "Memory.*Keyboard.*Network.*SCSI" {
-				send "1\r"
+				send "8\r"
 				return
 			}
 		}
