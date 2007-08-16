@@ -109,7 +109,7 @@ interact {
 	"\001es" {	;# set emacs mode in bash
 		send "set -o emacs\r"
 	}
-	"\001ofb" {	;# boot from o/f
+	"\001bof" {	;# boot from o/f
 		send "dev /packages/gui obe\r"
 	}
 	"\001sms" {	;# try to enter sms
