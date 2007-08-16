@@ -23,8 +23,8 @@ if {! [info exists [lindex $argv 0]]} {
 }
 
 set login_prompt "login: $|username: $"
-set passwd_prompt "padmin's Password: $|Password for hscroot: $|password: $"
-set shell_prompt "\\$ $|~> |system> $"
+set passwd_prompt "padmin's Password: $|Password for hscroot: $|password: $|Password: $"
+set shell_prompt "\\$ $|~> |system> $|# $"
 
 set hostname 	[lindex $argv 0]
 set cmd_line 	[eval lindex \$$hostname 0]
