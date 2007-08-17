@@ -1,5 +1,5 @@
 #!/usr/bin/expect --
-exp_internal -f /tmp/log.out 0
+#exp_internal -f /tmp/log.out 0
 
 source recorder.tcl
 
@@ -102,6 +102,25 @@ expect {
 		send "$mk_cmd\r"
 	}
 }
+
+# embed interact func
+proc embed_interact {str_wait command message_enter message_leave} {
+	send_user "$message_enter\n"
+	interact {
+		"\001q" {
+			send_user "$message_leave\n"
+			return
+		}
+		-o eof {
+			inter_return
+		}
+		-nobuffer -re "$str_wait" {
+			send "$command\r"
+			return
+		}
+	}
+}
+
 interact {
 	"\001a" {	;# how to input 'ctrl-a', learn from screen
 		send "\001"
@@ -113,35 +132,9 @@ interact {
 		send "dev /packages/gui obe\r"
 	}
 	"\001sms" {	;# try to enter sms
-		send_user "Trun on waiting for dropping into sms\n"
-		interact {
-			"\001q" {
-				send_user "Trun off waiting for dropping into sms\n"
-				return
-			}
-			-o eof {
-				inter_return
-			}
-			-nobuffer -re "Memory.*Keyboard.*Network.*SCSI" {
-				send "1\r"
-				return
-			}
-		}
+		embed_interact "Memory.*Keyboard.*Network.*SCSI" "1" "Trun on waiting for dropping into sms" "Trun off waiting for dropping into sms"
 	}
 	"\001of" {	;# try to enter of
-		send_user "Trun on waiting for dropping into o/f\n"
-		interact {
-			"\001q" {
-				send_user "Trun off waiting for dropping into o/f\n"
-				return
-			}
-			-o eof {
-				inter_return
-			}
-			-nobuffer -re "Memory.*Keyboard.*Network.*SCSI" {
-				send "8\r"
-				return
-			}
-		}
+		embed_interact "Memory.*Keyboard.*Network.*SCSI" "8" "Trun on waiting for dropping into o/f" "Trun off waiting for dropping into o/f"
 	}
 }
