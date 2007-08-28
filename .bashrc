@@ -53,6 +53,14 @@ alias qm='qmake -project;qmake;make'
 # for telnet to AIX with TERM set to vt100
 alias telnet='TERM=vt100 telnet'
 
+
+## FUNCTIONS
+# query which package the command belonging to
+rpmp()
+{
+	rpm -qf $(whereis $1|cut -d' ' -f2)
+}
+
 # vncviewer used at IBM pLinux ...
 vv()
 {
