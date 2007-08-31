@@ -134,8 +134,9 @@ if {$RUN_COMMAND} {
 	set timeout -1
 	expect eof
 } else {
-	send \"set -o emacs\r\"
-	interact 
+	interact {
+		\"\\001se\" { send \"set -o emacs\r\"}
+	}
 }"
 }
 
