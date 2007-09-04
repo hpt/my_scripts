@@ -135,7 +135,7 @@ if {$RUN_COMMAND} {
 	expect eof
 } else {
 	interact {
-		\"\\001se\" { send \"set -o emacs\r\"}
+		\"\\001es\" { send \"set -o emacs\r\"}
 	}
 }"
 }
