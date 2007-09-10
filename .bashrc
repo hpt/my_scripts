@@ -136,6 +136,7 @@ if {$RUN_COMMAND} {
 } else {
 	interact {
 		\"\\001es\" { send \"set -o emacs\r\"}
+		\"\\001ios\" { send \"/LTE/tools/ltpr/gss.ltpr -f IO\r\"}
 	}
 }"
 }
