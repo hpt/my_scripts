@@ -128,6 +128,9 @@ interact {
 	"\001es" {	;# set emacs mode in bash
 		send "set -o emacs\r"
 	}
+	"\001ios" {	;# query the IO ST status
+		send "/LTE/tools/ltpr/gss.ltpr -f IO\r"
+	}
 	"\001bof" {	;# boot from o/f
 		send "dev /packages/gui obe\r"
 	}
