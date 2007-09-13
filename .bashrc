@@ -70,7 +70,10 @@ vv()
 # remove the host which ssh key changed ...
 rsk()
 {
-	perl -ni -e "if(!/$1/){print;}" ~/.ssh/known_hosts
+	flock /tmp/rsk_lock -c "\
+	perl -ni -e 'if(!/$1/){print;}' ~/.ssh/known_hosts \
+	"
+
 }
 
 # auto login or execute restricted remote commands (doesn't 
