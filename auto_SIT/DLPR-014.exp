@@ -1,0 +1,193 @@
+#!/usr/bin/expect -f
+# NOTE!!
+# this script try to assist SIT case DLPR-014: 
+# Dynamically add a new DASD IOA to a linux partition
+#
+# It auto login the machine, try to install dlpr packages, and prompt the user
+# to add IOA on the HMC
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+
+set timeout -1
+set send_slow {1 .1}
+
+# support all host ...
+set hostname [lindex $argv 0]
+spawn sh -c ". ~/.bashrc;assh $hostname"
+
+#
+set prompt "root@.* ~\]# $"
+
+match_max 100000
+expect -re $prompt
+sleep .1
+send -s -- "if"
+expect -exact "if"
+sleep .1
+send -s -- " ! mo"
+expect -exact "m"
+sleep .1
+send -s -- "u"
+expect -exact "ou"
+sleep .1
+send -s -- "nt"
+expect -exact "nt"
+sleep .1
+send -s -- " | grep"
+expect -exact "rep"
+sleep .1
+send -s -- " -q"
+expect -exact "-q"
+sleep .1
+send -s -- " '/LTE"
+expect -exact "TE"
+sleep .1
+send -s -- "';th"
+expect -exact "t"
+sleep .1
+send -s -- "e"
+expect -exact "h"
+sleep .1
+send -s -- "n"
+expect -exact "en"
+sleep .1
+send -s -- " mk"
+expect -exact "mk"
+sleep .1
+send -s -- "di"
+expect -exact "d"
+sleep .1
+send -s -- "r"
+expect -exact "i"
+sleep .1
+send -s -- " "
+expect -exact "r "
+sleep .1
+send -s -- "/LTE"
+expect -exact "TE"
+sleep .1
+send -s -- ";mo"
+expect -exact "m"
+sleep .1
+send -s -- "u"
+expect -exact "ou"
+sleep .1
+send -s -- "nt"
+expect -exact "n"
+sleep .1
+send -s -- " "
+expect -exact "t"
+sleep .1
+send -s -- "l"
+expect -exact " "
+sleep .1
+send -s -- "s"
+expect -exact "l"
+sleep .1
+send -s -- "l"
+expect -exact "s"
+sleep .1
+send -s -- "t"
+expect -exact "l"
+sleep .1
+send -s -- "e"
+expect -exact "te"
+sleep .1
+send -s -- ":/LTE"
+expect -exact "TE"
+sleep .1
+send -s -- " /LTE"
+expect -exact "TE"
+sleep .1
+send -s -- ";"
+expect -exact ""
+sleep .1
+send -s -- "fi"
+expect -exact "fi"
+sleep .1
+send -s -- "\r"
+expect -re $prompt
+sleep .1
+send -s -- "/LTE"
+expect -exact "TE"
+sleep .1
+send -s -- "	"
+expect -exact "/"
+sleep .1
+send -s -- "/to	"
+expect -exact "ools/"
+sleep .1
+send -s -- "se"
+expect -exact "s"
+sleep .1
+send -s -- "t"
+expect -exact "e"
+sleep .1
+send -s -- "u"
+expect -exact "tu"
+sleep .1
+send -s -- "p	"
+expect -exact ""
+sleep .1
+send -s -- "	"
+expect -exact "\[root@sollp2 ~\]# /LTE//tools/setup"
+sleep .1
+send -s -- "	"
+expect -exact "\[root@sollp2 ~\]# /LTE//tools/setup"
+sleep .1
+send -s -- ".d	"
+expect -exact "/"
+sleep .1
+send -s -- "ibm"
+expect -exact "bm"
+sleep .1
+send -s -- "	"
+expect -exact "tools"
+sleep .1
+send -s -- " -"
+expect -exact " "
+sleep .1
+send -s -- "-ins"
+expect -exact "n"
+sleep .1
+send -s -- "t"
+expect -exact "s"
+sleep .1
+send -s -- "a"
+expect -exact "t"
+sleep .1
+send -s -- "l"
+expect -exact "a"
+sleep .1
+send -s -- "l\r"
+expect -re $prompt
+
+send_user "Please add the IOA on HMC\n"
+send_user "Done?\[y/n]\n"
+expect_user {
+	-re ".*\n"
+}
+		
+sleep .1
+send -s -- "dmesg"
+expect -exact "sg"
+sleep .1
+send -s -- "\r"
+expect -re $prompt
+sleep .1
+send -s -- "lssl	"
+expect -exact "ot "
+sleep .1
+send -s -- "\r"
+expect -re $prompt
+
+interact
