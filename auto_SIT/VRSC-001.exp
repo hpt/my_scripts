@@ -1,0 +1,103 @@
+#!/usr/bin/expect -f
+# A script for testing SIT VRSC-001.
+# It will expect the right results after each command running. If the
+# results is wrong, it will stop forever ...
+# If the testing succeeds, it will enter interact mode .
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+
+set hostname [lindex $argv 0 ]
+set prompt ".*# $"
+
+set timeout -1
+set send_slow {1 .1}
+spawn sh -c ". ~/.bashrc;assh $hostname"
+match_max 100000
+expect -re "$prompt"
+sleep .1
+send -s -- "/bin/ls"
+expect -exact "ls"
+sleep .1
+send -s -- " -F /proc/device-tree/vdevice/"
+expect -exact " -F /proc/device-tree/vdevice/"
+sleep .1
+send -s -- "\r"
+expect -re ".*l-lan@.*v-scsi@.*$prompt"
+sleep .1
+send -s -- "/bin/ls "
+expect -exact "ls "
+sleep .1
+send -s -- "-F "
+expect -exact "-F "
+sleep .1
+send -s -- "/sys/devices/vio/"
+expect -exact "/sys/devices/vio/"
+sleep .1
+send -s -- "\r"
+expect -re ".*3000000./.*3000000./.*$prompt"
+sleep .1
+send -s -- "ls"
+expect -exact "ls"
+sleep .1
+send -s -- " -l "
+expect -exact " -l \[K"
+sleep .1
+send -s -- ""
+expect -exact "\[K"
+sleep .1
+send -s -- ""
+expect -exact "\[K"
+sleep .1
+send -s -- ""
+expect -exact "\[K"
+sleep .1
+send -s -- ""
+expect -exact "\[K\[K"
+sleep .1
+send -s -- "/bin/ls"
+expect -exact "l"
+sleep .1
+send -s -- " "
+expect -exact "s"
+sleep .1
+send -s -- "-"
+expect -exact " -"
+sleep .1
+send -s -- "l "
+expect -exact "l "
+sleep .1
+send -s -- "/sys/devices/vio/"
+expect -exact "/sys/devices/vio/"
+sleep .1
+send -s -- "300"
+expect -exact "30"
+expect -exact "0"
+sleep .1
+send -s -- "0000"
+expect -exact "000"
+expect -exact "0"
+sleep .1
+send -s -- "\[^0\]\r"
+expect -re "$prompt"
+sleep .1
+send -s -- "ech"
+expect -exact "c"
+sleep .1
+send -s -- "o"
+expect -exact "ho"
+sleep .1
+send -s -- " \""
+expect -exact "\[K"
+sleep .1
+send -s -- "OK\r"
+expect -re "$prompt"
+interact
