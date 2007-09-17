@@ -135,16 +135,7 @@ sleep .1
 send -s -- "u"
 expect -exact "tu"
 sleep .1
-send -s -- "p	"
-expect -exact ""
-sleep .1
-send -s -- "	"
-expect -exact "\[root@sollp2 ~\]# /LTE//tools/setup"
-sleep .1
-send -s -- "	"
-expect -exact "\[root@sollp2 ~\]# /LTE//tools/setup"
-sleep .1
-send -s -- ".d	"
+send -s -- "p.d	"
 expect -exact "/"
 sleep .1
 send -s -- "ibm"
@@ -169,7 +160,17 @@ send -s -- "l"
 expect -exact "a"
 sleep .1
 send -s -- "l\r"
-expect -re $prompt
+expect {
+	-exact "(y/n) " {
+		interact {
+			"\004" send_user "Please use '~q' to return to the auto-processing ...\n"
+			"~q" return
+		}
+		send "\r"
+		exp_continue
+	}
+	-re $prompt
+}
 
 send_user "Please add the IOA on HMC\n"
 send_user "Done?\[y/n]\n"
