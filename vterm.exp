@@ -33,7 +33,7 @@ set passwd	[eval lindex \$$hostname 2]
 set rm_cmd	[eval lindex \$$hostname 3]
 set mk_cmd	[eval lindex \$$hostname 4]
 
-set timeout 30
+set timeout 60
 
 eval spawn $cmd_line
 
