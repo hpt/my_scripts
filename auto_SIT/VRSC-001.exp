@@ -31,7 +31,7 @@ send -s -- " -F /proc/device-tree/vdevice/"
 expect -exact " -F /proc/device-tree/vdevice/"
 sleep .1
 send -s -- "\r"
-expect -re ".*l-lan@.*v-scsi@.*$prompt"
+expect -re ".*l-lan@.*v-scsi@.*$prompt" { send_user "Seems /proc/device-tree/vdevice/ is OK ...\n" }
 sleep .1
 send -s -- "/bin/ls "
 expect -exact "ls "
@@ -43,7 +43,7 @@ send -s -- "/sys/devices/vio/"
 expect -exact "/sys/devices/vio/"
 sleep .1
 send -s -- "\r"
-expect -re ".*3000000./.*3000000./.*$prompt"
+expect -re ".*3000000./.*3000000./.*$prompt" { send_user "Seems /sys/devices/vio/ is OK ...\n" }
 sleep .1
 send -s -- "ls"
 expect -exact "ls"
