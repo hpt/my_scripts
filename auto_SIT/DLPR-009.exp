@@ -1,0 +1,171 @@
+#!/usr/bin/expect -f
+#
+# A script to run SIT DLPR-009
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+#
+
+set hostname [lindex $argv 0]
+set prompt "@.*# $"
+
+set timeout -1
+spawn sh -c ". ~/.bashrc;assh $hostname"
+match_max 100000
+
+
+#
+send_user "Try to install the DLPAR ibmtools ...\n"
+expect -re $prompt
+send -- "if \[\[ \$(mount) != */LTE* \]\];then mkdir /LTE;mount lslte:/LTE /LTE;fi"
+expect -exact "fi"
+send -- "\r"
+expect -re $prompt
+send -- "/LTE/tools/setup.d/ibmtools --install"
+expect -exact "/LTE/tools/setup.d/ibmtools --install"
+send -- "\r"
+
+expect { 
+	-exact "(y/n)" {
+		interact {
+			~q return
+			"\004" { send_user "Please use '~q' to continue the auto-processing ..."}
+		}
+		send "\r"
+		exp_continue
+	}
+	-re $prompt {}
+}
+
+send -- "ls"
+expect -exact "ls"
+send -- "slot "
+expect -exact "t"
+send -- "-"
+expect -exact " -"
+send -- "c "
+expect -exact "c "
+send -- "pci"
+expect -exact "ci"
+send -- "\r"
+expect -re $prompt
+send -- "ifco"
+expect -exact "ifc"
+send -- "nf"
+expect -exact "on"
+send -- "i"
+expect -exact "f"
+send -- "g -a"
+expect -exact "i"
+send -- "\r"
+expect -re $prompt
+
+send_user "Please add a network card from HMC. Press enter for continue.\n"
+expect_user -re "\n"
+
+send -- "dme"
+expect -exact "me"
+send -- "sg	"
+expect -exact " "
+send -- "|ta"
+expect -exact "t"
+send -- "i"
+expect -exact "ai"
+send -- "l \r"
+expect -re $prompt
+send -- "if"
+expect -exact "if"
+send -- "co"
+expect -exact "co"
+send -- "nf"
+expect -exact "n"
+send -- "i"
+expect -exact "f"
+send -- "g"
+expect -exact "i"
+send -- " "
+expect -exact "g"
+send -- "-"
+expect -exact " "
+send -- "a"
+expect -exact "-a"
+send -- "\r"
+expect -re $prompt
+send -- "lsslot"
+expect -exact "o"
+send -- " "
+expect -exact "t"
+send -- "-"
+expect -exact " -"
+send -- "c "
+expect -exact "c "
+send -- "pc"
+expect -exact "p"
+send -- "i"
+expect -exact "ci"
+send -- "\r"
+expect -re $prompt
+
+send_user "\nPlease config the new network card and use it.\n"
+send_user "\nAnd then, ifdown the new network card before continue with ~q\n"
+interact {
+	~q return
+	"\004" { send_user "Please use '~q' to continue the auto-processing ..." }
+}
+
+send_user "\nPlease remove the new network card from HMC.\n"
+send_user "\nPress enter when done ... \n"
+expect_user "\n"
+
+send -- "dme"
+expect -exact "me"
+send -- "sg	"
+expect -exact " "
+send -- "|ta"
+expect -exact "t"
+send -- "i"
+expect -exact "ai"
+send -- "l \r"
+expect -re $prompt
+send -- "if"
+expect -exact "if"
+send -- "co"
+expect -exact "co"
+send -- "nf"
+expect -exact "n"
+send -- "i"
+expect -exact "f"
+send -- "g"
+expect -exact "i"
+send -- " "
+expect -exact "g"
+send -- "-"
+expect -exact " "
+send -- "a"
+expect -exact "-a"
+send -- "\r"
+expect -re $prompt
+send -- "lsslot"
+expect -exact "o"
+send -- " "
+expect -exact "t"
+send -- "-"
+expect -exact " -"
+send -- "c "
+expect -exact "c "
+send -- "pc"
+expect -exact "p"
+send -- "i"
+expect -exact "ci"
+send -- "\r"
+expect -re $prompt
+
+interact
