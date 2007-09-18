@@ -172,6 +172,19 @@ expect {
 	-re $prompt
 }
 
+sleep .1
+send -s -- "dmesg"
+expect -exact "sg"
+sleep .1
+send -s -- "\r"
+expect -re $prompt
+sleep .1
+send -s -- "lssl	"
+expect -exact "ot "
+sleep .1
+send -s -- "\r"
+expect -re $prompt
+
 send_user "Please add the IOA on HMC\n"
 send_user "Done?\[y/n]\n"
 expect_user {
