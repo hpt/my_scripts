@@ -163,7 +163,7 @@ send -s -- "l\r"
 expect {
 	-exact "(y/n) " {
 		interact {
-			"\004" send_user "Please use '~q' to return to the auto-processing ...\n"
+			"\004" { send_user "Please use '~q' to return to the auto-processing ...\n"}
 			"~q" return
 		}
 		send "\r"
