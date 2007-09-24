@@ -1,0 +1,43 @@
+#!/usr/bin/expect -f
+#
+# This script try to prepare the env for SIT case ERRH-012.
+# It login the system, setup the env and run stressKernel to add the average 
+# system loading. When finish all of those, it will note the user to open a
+# vterm to the system and perform the testing.
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+#
+
+set hostname [lindex $argv 0]
+set prompt "root@.*# $"
+
+set timeout -1
+spawn sh -c ". ~/.bashrc;assh $hostname"
+match_max 100000
+expect -re $prompt
+send -- "mount |grep -q /LTE || { mkdir /LTE;mount lslte:/LTE /LTE; } && /LTE/images/apps/pthreads_test/1.install && { cd /pthreads_test;./2.go &>/dev/null & } && echo 1 >/proc/sys/kernel/sysrq && echo \"Prepare is successful.\""
+expect -exact "mount |grep -q /LTE || { mkdir /LTE;mount lslte:/LTE /LTE; } & \r& /LTE/images/apps/pthreads_test/1.install && { cd /pthreads_test;./2.go &>/dev/nul \rl & } && echo 1 >/proc/sys/kernel/sysrq && echo \"Prepare is successful.\""
+send -- "\r"
+set timeout 15
+expect {
+	-re "Prepare is successful.*$prompt" {
+		send_user "\nPrepare is OK, please try to connect a vterm to the system\n"
+		send_user "and preform the ctrl-o-x\n"
+		send "\r"
+		interact
+	}
+	timeout {
+		send_user "\nPrepare failed ....\n"
+		send -- "\r"
+		interact
+	}
+}
