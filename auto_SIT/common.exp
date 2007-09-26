@@ -2,3 +2,12 @@
 
 set hostname [lindex $argv 0]
 set prompt ".*# $"
+
+proc blue_p {msg} {
+	# color
+	# it would be '^[[34;01m' & '^[[0m' in the bash
+	set BLUE "\[34;01m"
+	set OFF "\[0m"
+
+	puts "$BLUE$msg$OFF"
+}
