@@ -17,8 +17,7 @@ if {$force_conservative} {
 
 #
 
-set hostname [lindex $argv 0]
-set prompt "root@.*# $"
+source common.exp
 
 set timeout -1
 spawn sh -c ". ~/.bashrc;assh $hostname"

@@ -20,13 +20,11 @@ if {$force_conservative} {
 set timeout -1
 set send_slow {1 .1}
 
-# support all host ...
-set hostname [lindex $argv 0]
+# 
+source common.exp
+
 spawn sh -c ". ~/.bashrc;assh $hostname"
-
 #
-set prompt "root@.* ~\]# $"
-
 match_max 100000
 expect -re $prompt
 sleep .1

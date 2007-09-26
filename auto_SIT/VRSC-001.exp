@@ -14,9 +14,7 @@ if {$force_conservative} {
 	}
 }
 
-
-set hostname [lindex $argv 0 ]
-set prompt ".*# $"
+source common.exp
 
 set timeout -1
 set send_slow {1 .1}
