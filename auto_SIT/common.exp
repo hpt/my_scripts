@@ -1,4 +1,4 @@
 #!/usr/bin/expect 
 
 set hostname [lindex $argv 0]
-set prompt "root@.*# $"
+set prompt ".*# $"
