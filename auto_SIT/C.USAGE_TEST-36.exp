@@ -1,0 +1,49 @@
+#!/usr/bin/expect -f
+# This script help you to finish the SIT case C.USAGE_TEST-36
+# It will auto logon the system, remind you to open a vterm to
+# the system, and then run the wall ....
+
+#
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+#
+
+source common.exp
+
+set timeout -1
+spawn sh -c ". ~/.bashrc;assh $hostname"
+match_max 100000
+expect -re "$prompt"
+blue_p "\nNow, please connect a vterm to $hostname\n"
+blue_p "Press return when done ...\n"
+expect_user "\n"
+send "\r"
+expect -re "$prompt"
+
+send -- "wall <<EOF"
+expect -exact "EOF"
+send -- "\r"
+expect -exact "\r
+> "
+send -- "hello, test for USAGE_TEST-36"
+expect -exact "USAGE_TEST-36"
+send -- "\r"
+expect -exact "\r
+> "
+send -- "EOF"
+expect -exact "EOF"
+send -- "\r"
+expect -re "hello, test for USAGE_TEST-36.*$prompt"
+blue_p "Please go to the vterm to check the message\n"
+send "\r"
+expect -re "$prompt"
+interact
