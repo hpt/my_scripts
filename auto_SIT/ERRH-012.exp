@@ -24,7 +24,7 @@ spawn sh -c ". ~/.bashrc;assh $hostname"
 match_max 100000
 expect -re $prompt
 send -- "mount |grep -q /LTE || { mkdir /LTE;mount lslte:/LTE /LTE; } && /LTE/images/apps/pthreads_test/1.install && { cd /pthreads_test;./2.go &>/dev/null & } && echo 1 >/proc/sys/kernel/sysrq && echo \"Prepare is successful.\""
-expect -exact "mount |grep -q /LTE || { mkdir /LTE;mount lslte:/LTE /LTE; } & \r& /LTE/images/apps/pthreads_test/1.install && { cd /pthreads_test;./2.go &>/dev/nul \rl & } && echo 1 >/proc/sys/kernel/sysrq && echo \"Prepare is successful.\""
+expect -exact "\"Prepare is successful.\""
 send -- "\r"
 set timeout 15
 expect {
