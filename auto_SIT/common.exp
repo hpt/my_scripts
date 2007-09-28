@@ -11,3 +11,11 @@ proc blue_p {msg} {
 
 	puts "$BLUE$msg$OFF"
 }
+
+proc interact_back {} {
+	blue_p "\nPlease use \"~q\" to restore auto processing.\n"
+	interact {
+		"~q" return
+		"\004" blue_p "\nPlease use \"~q\" to restore auto processing.\n"
+	}
+}
