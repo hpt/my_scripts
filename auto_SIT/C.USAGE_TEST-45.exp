@@ -1,0 +1,149 @@
+#!/usr/bin/expect -f
+#
+# This script will try to assist to test quota user's disk 
+# Please look the code and SIT C.USAGE TEST - 45's scen for details ...
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+#
+# 
+
+source common.exp
+
+set timeout -1
+spawn sh -c ". ~/.bashrc;assh $hostname"
+match_max 100000
+expect -re "$prompt"
+
+blue_p "\nTry to add user quotatester.\n"
+
+send -- "useradd quotatester && echo OK"
+expect -exact "echo OK"
+send -- "\r"
+
+expect { 
+	-re "OK.*$prompt" {}
+	-re "$prompt" {
+		blue_p "\nFailed to add user quotatester\n"
+		blue_p "Please fix this problem and continue.\n"
+		interact_back
+	}
+}
+	
+
+blue_p "\nTry to prepare the disk partition\n"
+blue_p "Please tell me which partition do you want to use.\n"
+expect_user -re "(\[^\n]*)\n" { send_user "\n"}
+
+#user, please input correctly
+set disk_path $expect_out(1,string)
+set disk_dev [string map {"/dev/" ""} $disk_path]
+
+send -- "cat >> /etc/fstab"
+expect -exact ">> /etc/fstab"
+send -- "\r"
+expect -exact "\r
+"
+send -- "$disk_path       /mnt/$disk_dev       ext3    defaults,usrquota       0 0"
+expect -exact "0 0"
+send -- "\r"
+expect -exact "\r
+"
+send -- ""
+expect -re "$prompt"
+send -- "mkfs.ext3 $disk_path && echo OK"
+expect -exact "echo OK"
+send -- "\r"
+
+expect {
+	-re "OK.*$prompt" {}
+	-re "$prompt" {
+		blue_p "\nSeems failed to mkfs on $disk_path.\n"
+		blue_p "Please fix this problem and continue."
+		interact_back
+	}
+}
+
+
+send -- "mkdir /mnt/$disk_dev && chmod 777 /mnt && chmod 777 /mnt/$disk_dev && echo OK"
+expect -exact "echo OK"
+send -- "\r"
+
+expect {
+	-re "OK.*$prompt" {}
+	-re "$prompt" {
+		blue_p "\nSeems failed to make the dirs."
+		blue_p "\nPlease fix this problem and continue."
+		interact_back
+	}
+}
+
+send -- "mount /mnt/$disk_dev && chmod 777 /mnt/$disk_dev && mount |grep \"$disk_dev.*usrquota\" && echo OK"
+expect -exact "echo OK"
+send -- "\r"
+expect {
+	-re "OK.*$prompt" {}
+	-re "$prompt" {
+		blue_p "\nSeems failed to mount and turn on usrquota."
+		blue_p "\nPlease fix this problem and continue."
+		interact_back
+	}
+}
+
+send -- "quotacheck -vu  /dev/$disk_dev && ls /mnt/$disk_dev/aquota.user && echo OK"
+expect -exact "echo OK"
+send -- "\r"
+expect {
+	-re "OK.*$prompt" {} 
+	-re "$prompt" {
+		blue_p "\nSeems faild to run quotacheck."
+		blue_p "\nPlease fix this problem and continue."
+		interact_back
+	}
+}
+
+
+blue_p "\nYou will enter interact mode."
+blue_p "\nPlease use \"edquota quotatester -f $disk_path\" to config user's quota."
+blue_p "\nPress return for continue ...\n"
+expect_user "\n"
+interact_back
+
+send -- "quotaon -vu $disk_path && echo OK"
+expect -exact "echo OK"
+send -- "\r"
+expect {
+	-re "OK.*$prompt" {} 
+	-re "$prompt" {
+		blue_p "\nSeems \"quotaon -vu $disk_path\" failed." 
+		blue_p "\nPlease fix this problem and continue."
+		interact_back
+	}
+}
+
+set i 0
+while 1 {
+	send -- "sudo -u quotatester touch /mnt/$disk_dev/test$i || echo Failed"
+	expect -exact "echo Failed"
+	send -- "\r"
+	expect {
+		-re "Failed.*$prompt" {
+			blue_p "\nMaybe quota limit reached? Please check ...\n"
+			break
+		}
+		-re ".*$prompt" {
+			set i [expr $i+1]
+			continue
+		}
+	}
+}
+
+interact
