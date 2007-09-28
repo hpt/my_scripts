@@ -14,11 +14,12 @@ proc blue_p {msg} {
 
 proc interact_back {} {
 	blue_p "\nPlease use \"~q\" to restore auto processing.\n"
+	send "\r"
 	interact {
 		"~q" return
 		"\004" {
 			blue_p "\nPlease use \"~q\" to restore auto processing.\n"
-			send "\n"
+			send "\r"
 		}
 	}
 }
