@@ -1,0 +1,69 @@
+#!/usr/bin/expect -f
+#
+# A script try to assist setup ENV for run ltpr tests.
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+#
+# 2) differing output - Some programs produce different output each time
+# they run.  The "date" command is an obvious example.  Another is
+# ftp, if it produces throughput statistics at the end of a file
+# transfer.  If this causes a problem, delete these patterns or replace
+# them with wildcards.  An alternative is to use the -p flag (for
+# "prompt") which makes Expect only look for the last line of output
+# (i.e., the prompt).  The -P flag allows you to define a character to
+# toggle this mode off and on.
+#
+# Read the man page for more info.
+#
+# -Don
+
+source common.exp
+
+set timeout -1
+spawn sh -c ". ~/.bashrc;assh $hostname"
+match_max 100000
+expect -re "$prompt"
+
+blue_p "\nSetup env ..."
+
+send -- "mount | grep -q /LTE || { mkdir /LTE;mount lslte:/LTE /LTE; } && { /LTE/tools/setup.d/check.general || /LTE/tools/setup general; } && echo \"Please add current machine into /LTE/tools/setup.d/setup.conf.base_ltpr\" || echo 'setup general failed, please check ...'"
+expect -exact "please check ...'"
+send -- "\r"
+
+expect {
+	-re "setup.conf.base_ltpr.*$prompt" {
+		blue_p "\nSeems setup env succeed"
+		blue_p "\nPlease add this machine into /LTE/tools/setup.d/setup.conf.base_ltpr, and continue."
+		interact_back
+		}
+	-re "please check \.\.\..*$prompt" {
+		blue_p "\nSeems setup env failed."
+		blue_p "\nPlease fix this problem and continue."
+		interact_back
+	}
+}
+
+send -- "/LTE/tools/setup.d/setup.ltpr ;/tools/base/start.ltpr -t && echo \"Start LTPR successfully\" || echo 'Failed to start LTPR, please check!'"
+expect -exact "please check!'"
+send -- "\r"
+expect {
+	-re "successfully.*$prompt" {
+		blue_p "\nSeems start ltpr successfully."
+		send -- "gss.ltpr\r"
+	}
+	-re "check.*$prompt" {
+		blue_p "\nSeems start ltpr failed"
+		blue_p "\nPlease check it."
+	}
+}
+
+interact
