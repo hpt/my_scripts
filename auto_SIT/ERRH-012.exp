@@ -29,7 +29,7 @@ send -- "\r"
 expect {
 	-re "repuired packages installed.*$prompt" {}
 	-re "missing some packages.*$prompt" {
-		send_user "\nSome repuired packages missing, please check it and try again\n"
+		blue_p "\nSome repuired packages missing, please check it and try again\n"
 		interact_back
 	}
 }
@@ -38,13 +38,13 @@ expect -exact "\"failed ...\""
 send -- "\r"
 expect {
 	-re "Prepare is successful.*$prompt" {
-		send_user "\nPrepare is OK, please try to connect a vterm to the system\n"
-		send_user "and preform the ctrl-o-x\n"
+		blue_p "\nPrepare is OK, please try to connect a vterm to the system\n"
+		blue_p "and preform the ctrl-o-x\n"
 		send "\r"
 		interact
 	}
 	-re "failed \.\.\..*$prompt" {
-		send_user "\nPrepare is failed, please check this problem and try again.\n"
+		blue_p "\nPrepare is failed, please check this problem and try again.\n"
 		send "\r"
 		interact
 	}
