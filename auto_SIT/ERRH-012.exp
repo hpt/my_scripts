@@ -33,8 +33,8 @@ expect {
 		interact_back
 	}
 }
-send -- "mount |grep -q /LTE || { mkdir /LTE;mount lslte:/LTE /LTE; } && /LTE/images/apps/pthreads_test/1.install && { cd /pthreads_test;./2.go &>/dev/null & } && echo 1 >/proc/sys/kernel/sysrq && echo \"Prepare is successful.\" || echo \"failed ...\""
-expect -exact "\"failed ...\""
+send -- "mount |grep -q /LTE || { mkdir /LTE;mount lslte:/LTE /LTE; } && /LTE/images/apps/pthreads_test/1.install && { cd /pthreads_test;./2.go &>/dev/null & } && echo 1 >/proc/sys/kernel/sysrq && echo \"Prepare is successful.\" || echo \"failed\""
+expect -exact "\"failed\""
 send -- "\r"
 expect {
 	-re "Prepare is successful.*$prompt" {
@@ -43,7 +43,7 @@ expect {
 		send "\r"
 		interact
 	}
-	-re "failed \.\.\..*$prompt" {
+	-re "failed.*$prompt" {
 		blue_p "\nPrepare is failed, please check this problem and try again.\n"
 		send "\r"
 		interact
