@@ -33,13 +33,13 @@ expect {
 		interact_back
 	}
 }
-send -- "mount |grep -q /LTE || { mkdir /LTE;mount lslte:/LTE /LTE; } && /LTE/images/apps/pthreads_test/1.install && { cd /pthreads_test;./2.go &>/dev/null & } && echo 1 >/proc/sys/kernel/sysrq && echo \"Prepare is successful.\" || echo \"failed\""
+send -- "mount |grep -q /LTE || { mkdir /LTE;mount lslte:/LTE /LTE; } && /LTE/images/apps/pthreads_test/1.install && { cd /pthreads_test;./2.go &>/dev/null & } && if \[\[ -f /proc/sys/kernel/sysrq ]];then echo 1 >/proc/sys/kernel/sysrq;fi && if \[\[ -f /proc/sys/kernel/kdb ]];then echo 1 >/proc/sys/kernel/kdb;fi && echo \"Prepare is successful.\" || echo \"failed\""
 expect -exact "\"failed\""
 send -- "\r"
 expect {
 	-re "Prepare is successful.*$prompt" {
 		blue_p "\nPrepare is OK, please try to connect a vterm to the system\n"
-		blue_p "and preform the ctrl-o-x\n"
+		blue_p "and preform the ctrl-o-x or ctrl-o-o(sles9)\n"
 		send "\r"
 		interact
 	}
