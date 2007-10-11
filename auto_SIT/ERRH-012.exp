@@ -23,6 +23,16 @@ set timeout -1
 spawn sh -c ". ~/.bashrc;assh $hostname"
 match_max 100000
 expect -re $prompt
+send -- "rpm -q gcc && rpm -q glibc-devel && echo \"repuired packages installed.\" || echo \"missing some packages.\""
+expect -exact "some packages.\"" 
+send -- "\r"
+expect {
+	-re "repuired packages installed.*$prompt" {}
+	-re "missing some packages.*$prompt" {
+		send_user "\nSome repuired packages missing, please check it and try again\n"
+		interact_back
+	}
+}
 send -- "mount |grep -q /LTE || { mkdir /LTE;mount lslte:/LTE /LTE; } && /LTE/images/apps/pthreads_test/1.install && { cd /pthreads_test;./2.go &>/dev/null & } && echo 1 >/proc/sys/kernel/sysrq && echo \"Prepare is successful.\" || echo \"failed ...\""
 expect -exact "\"failed ...\""
 send -- "\r"
