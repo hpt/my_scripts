@@ -1,0 +1,86 @@
+#!/usr/bin/expect --
+#***********************************************************************#
+# a auto login & run command on remote machines script			#
+#***********************************************************************#
+
+
+# default password is ...
+set passwd "don2rry"
+
+# 
+proc help {} {
+	global argv0
+	puts "Usage: $argv0 \[-p passwd] \[user@]hostname \[commands]"
+}
+
+while {[llength $argv] > 0} {
+	set flag [lindex $argv 0]
+	if {0==[regexp "^-" $flag]} break
+	set argv [lrange $argv 1 end]
+	switch -- $flag \
+		"-p" {
+			set passwd [lindex $argv 0]
+			set argv [lrange $argv 1 end]
+		} \
+		default {
+			help
+			exit 1
+		}
+}
+
+if {[llength $argv] < 1} {
+	help
+	exit 1
+}
+
+set machine [lindex $argv 0]
+set cmd [lindex $argv 1]
+
+if {! [string match "*?@?*" $machine]} {
+	set machine "root@$machine"
+}
+
+while 1 {
+	spawn ssh $machine $cmd
+	expect {
+		-re "assword: $" {
+			send "$passwd\r"
+			break
+		}
+		-exact "(yes/no)?" {
+			send "yes\r"
+			exp_continue
+		}
+		-exact "ailed." {
+			set m [string range $machine [expr [string first @ $machine] + 1] end]
+	                exec sh -c ". ~/.bashrc;rsk $m"
+	                # cann't define HOST in this scope,otherwise
+	                # after rsk will be none string.
+	                close
+	                wait
+	                continue
+	         }
+		-exact "onnection refuse" {  # for the host refuse to connect
+                        puts "Connection refused to $machine"
+                        exit 0
+                }
+                eof {                   # for no password needed
+                        puts "No password be needed...."
+                        exit 0
+                }
+		timeout {
+			puts "timeout to $machine"
+			exit 0
+		}
+	}
+}
+
+if {[string length $cmd] > 0} {
+	set timout -1
+	expect eof
+} else {
+	interact {
+		"\001es" { send "set -o emacs\r"}
+		"\001ios" { send "/LTE/tools/ltpr/gss.ltpr -f IO\r"}
+	}
+}
