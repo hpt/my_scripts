@@ -2,7 +2,8 @@
 #***********************************************************************#
 # a auto login & run command on remote machines script			#
 #***********************************************************************#
-
+# default timeout ...
+set timeout 30
 
 # default password is ...
 set passwd "don2rry"
