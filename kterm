@@ -1,0 +1,27 @@
+#!/bin/sh
+#***************************************#
+#	a script to open vterm		#
+#***************************************#	
+
+# NOTE: 1.base on konsole & a expect script: vterm.exp
+# 	2.konsole must be run with "--script" option!
+#	3.konsole must has a session named "vterm", which run vterm.exp
+
+[[ $# -lt 1 ]] && { echo "Usage: $0 hostname1 hostname2 ...";exit 1; }
+
+#konsole=$(dcopstart konsole-script)
+#session=$(dcop $konsole konsole currentSession)
+konsole=$(echo $KONSOLE_DCOP |cut -d'(' -f2|cut -d',' -f1)
+
+vterm_open()
+{
+	session=$(dcop $konsole konsole newSession vterm)
+	sleep 1
+	dcop $konsole $session sendSession "$1"
+	dcop $konsole $session renameSession "$1"
+}
+
+for h in $*
+do
+	vterm_open $h &
+done
