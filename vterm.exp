@@ -1,7 +1,12 @@
 #!/usr/bin/expect --
 #exp_internal -f /tmp/log.out 0
 
-source recorder.tcl
+# try to find out the recorder ...
+if {[info exists env(VTERM_RECORDER)]} {
+	source $env(VTERM_RECORDER)
+} else {
+	source recorder.tcl
+}
 
 if {$argc != 1} {
 	puts "Usage: $argv0 machine_name"
