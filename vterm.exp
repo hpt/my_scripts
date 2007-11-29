@@ -60,7 +60,7 @@ if {0==[string first "ssh" $cmd_line]} {
 				close
 				wait
 				set hmc_name [string range $cmd_line [string first "@" $cmd_line] end]
-				exec sh -c ". ~/.bashrc;rsk $hmc_name"
+				exec flock /tmp/vterm_rsk.lock -c "perl -ni -e 'if(!/$hmc_name/){print;}' ~/.ssh/known_hosts"
 				eval spawn $cmd_line
 				continue
 			}
