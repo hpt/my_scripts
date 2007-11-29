@@ -145,4 +145,20 @@ interact {
 	"\001of" {	;# try to enter of
 		embed_interact "Memory.*Keyboard.*Network.*SCSI" "8" "Trun on waiting for dropping into o/f" "Trun off waiting for dropping into o/f"
 	}
+	"\001reboot" {	
+		puts "Try to reboot $hostname from the HMC ..."
+		exec /LTE/tools/lp_reboot.sh $hostname &
+	}
+	"\001active" {	
+		puts "Try to active $hostname from the HMC ..."
+		exec /LTE/tools/lp_active.sh $hostname &
+	}
+	"\001shutdown" {
+		puts "Try to shutdown $hostname from the HMC ..."
+		exec /LTE/tools/lp_shutdown.sh $hostname &
+	}
+	"\001sreset" {
+		puts "Try to softreset $hostname from the HMC ..."
+		exec /LTE/tools/lp_softreset.sh $hostname &
+	}
 }
