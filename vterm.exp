@@ -161,4 +161,8 @@ interact {
 		puts "Try to softreset $hostname from the HMC ..."
 		exec /LTE/tools/lp_softreset.sh $hostname &
 	}
+	"\001st" {
+		puts "Try to get state of $hostname from the HMC ..."
+		exec /LTE/tools/lp_status.sh $hostname &
+	}
 }
