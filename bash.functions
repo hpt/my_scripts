@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# echo a message about which command failed and exit when a 
+# simple command being failed.
+#trap 'cmd=${BASH_COMMAND:-"some command"};echo "Command failed: $cmd";exit 1' ERR
+trap 'echo "Command failed: $BASH_COMMAND";exit 1' ERR
+
+# tesing
+ls /no/such/file
