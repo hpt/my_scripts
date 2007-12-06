@@ -42,7 +42,7 @@ scan()
 
 	for((i=3;i<${#array[@]};i++))
 	do
-		assh.exp ${array[i]} "$CMD" &>$WP/${array[i]} &
+		assh.exp -s ${array[i]} "$CMD" &>$WP/${array[i]} &
 	done
 
 	wait
