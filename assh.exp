@@ -8,10 +8,13 @@ set timeout 30
 # default password is ...
 set passwd "don2rry"
 
+# default spawn options ...
+set spawn_options {}
+
 # 
 proc help {} {
 	global argv0
-	puts "Usage: $argv0 \[-p passwd] \[user@]hostname \[commands]"
+	puts "Usage: $argv0 \[-p passwd] \[-s\] \[user@]hostname \[commands]"
 }
 
 while {[llength $argv] > 0} {
@@ -22,6 +25,9 @@ while {[llength $argv] > 0} {
 		"-p" {
 			set passwd [lindex $argv 0]
 			set argv [lrange $argv 1 end]
+		} \
+		"-s" {
+			set spawn_options "-noecho"
 		} \
 		default {
 			help
@@ -42,7 +48,7 @@ if {! [string match "*?@?*" $machine]} {
 }
 
 while 1 {
-	spawn ssh $machine $cmd
+	eval spawn $spawn_options ssh $machine $cmd
 	expect {
 		-re "assword: $" {
 			send "$passwd\r"
