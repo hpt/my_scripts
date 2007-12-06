@@ -48,7 +48,7 @@ if {! [string match "*?@?*" $machine]} {
 }
 
 while 1 {
-	eval spawn $spawn_options ssh $machine $cmd
+	eval spawn $spawn_options ssh \$machine \$cmd
 	expect {
 		-re "assword: $" {
 			send "$passwd\r"
