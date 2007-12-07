@@ -3,6 +3,7 @@ WORKING_PATH="/tmp/.auto_st_scan.$$"
 CONFIG_FILE="$HOME/etc/auto_st_scan.conf"
 LOG_PATH="/tmp/auto_st_scan.log/"
 LOG_FILE="$LOG_PATH/log"
+TRUN_PATH="$HOME/bin/timed-run"
 
 E_WPATH=64	#
 E_CFILE=65	#
@@ -36,13 +37,14 @@ scan()
 	local RNAME="${array[0]}"
 	local PAT="${array[1]}"
 	local CMD="${array[2]}"
+	local TOUT="${array[3]}"
 	
 	local WP="$WORKING_PATH/$RNAME"
 	mkdir $WP
 
-	for((i=3;i<${#array[@]};i++))
+	for((i=4;i<${#array[@]};i++))
 	do
-		assh.exp -s ${array[i]} "$CMD" &>$WP/${array[i]} &
+		$TRUN_PATH "$TOUT" assh.exp -s ${array[i]} "$CMD" &>$WP/${array[i]} &
 	done
 
 	wait
