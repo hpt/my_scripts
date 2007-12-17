@@ -4,6 +4,7 @@ CONFIG_FILE="$HOME/etc/auto_st_scan.conf"
 LOG_PATH="/tmp/auto_st_scan.log/"
 LOG_FILE="$LOG_PATH/log"
 TRUN_PATH="$HOME/bin/timed-run"
+ASSH_PATH="$HOME/bin/assh.exp"
 
 E_WPATH=64	#
 E_CFILE=65	#
@@ -44,7 +45,7 @@ scan()
 
 	for((i=4;i<${#array[@]};i++))
 	do
-		$TRUN_PATH "$TOUT" assh.exp -s ${array[i]} "$CMD" &>$WP/${array[i]} &
+		$TRUN_PATH "$TOUT" "$ASSH_PATH" -s ${array[i]} "$CMD" &>$WP/${array[i]} &
 	done
 
 	wait
