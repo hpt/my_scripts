@@ -28,7 +28,7 @@ then
 	exit $E_ARG
 fi
 
-HMC=`$SHOW_HMC_PATH -s -n $1`
+HMC=`$SHOW_HMC_PATH -s -n $1|head -n1`
 if [ "$?" -eq 0 ]
 then
 	cp $HMC_INFO_PATH $HMC_INFO_LOCAL 2>/dev/null \
