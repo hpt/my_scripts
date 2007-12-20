@@ -130,6 +130,10 @@ interact {
 	"\001a" {	;# how to input 'ctrl-a', learn from screen
 		send "\001"
 	}
+	"\001~." {
+		close
+		exit
+	}
 	"\001es" {	;# set emacs mode in bash
 		send "set -o emacs\r"
 	}
