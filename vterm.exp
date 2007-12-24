@@ -124,7 +124,7 @@ proc embed_interact {str_wait command message_enter message_leave} {
 			exit
 		}
 		-re "\001\[^aq~]+" {
-			send_user "Please quit with Ctrl-a q and run this again..."
+			send_user "Please quit with Ctrl-a q and run this again...\n"
 		}
 		-o eof {
 			inter_return
