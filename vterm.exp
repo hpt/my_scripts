@@ -112,9 +112,19 @@ expect {
 proc embed_interact {str_wait command message_enter message_leave} {
 	send_user "$message_enter\n"
 	interact {
+		"\001a" {
+			send "\001"
+		}
 		"\001q" {
 			send_user "$message_leave\n"
 			return
+		}
+		"\001~." {
+			close
+			exit
+		}
+		-re "\001\[^aq~]+" {
+			send_user "Please quit with Ctrl-a q and run this again..."
 		}
 		-o eof {
 			inter_return
