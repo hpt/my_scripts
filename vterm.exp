@@ -133,6 +133,9 @@ proc embed_interact {str_wait command message_enter message_leave} {
 			send "$command\r"
 			return
 		}
+		timeout 600 {
+			send " \177"
+		}
 	}
 }
 
@@ -178,5 +181,9 @@ interact {
 	"\001st" {
 		puts "Try to get state of $hostname from the HMC ..."
 		exec /LTE/tools/lp_status.sh $hostname &
+	}
+	-o
+	timeout 600 {
+		send " \177"
 	}
 }
