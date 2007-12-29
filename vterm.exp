@@ -168,19 +168,19 @@ interact {
 	}
 	"\001boot" {	
 		puts "Try to active $hostname from the HMC ..."
-		exec /LTE/tools/lp_active.sh $hostname &
+		exec /LTE/tools/lp_commands.sh active $hostname &
 	}
 	"\001shutdown" {
 		puts "Try to shutdown $hostname from the HMC ..."
-		exec /LTE/tools/lp_shutdown.sh $hostname &
+		exec /LTE/tools/lp_commands.sh shutdown $hostname &
 	}
 	"\001sreset" {
 		puts "Try to softreset $hostname from the HMC ..."
-		exec /LTE/tools/lp_softreset.sh $hostname &
+		exec /LTE/tools/lp_commands.sh softreset $hostname &
 	}
 	"\001st" {
 		puts "Try to get state of $hostname from the HMC ..."
-		exec /LTE/tools/lp_status.sh $hostname &
+		exec /LTE/tools/lp_commands.sh state $hostname &
 	}
 	-o
 	timeout 600 {
