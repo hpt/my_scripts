@@ -139,7 +139,29 @@ proc embed_interact {str_wait command message_enter message_leave} {
 	}
 }
 
+proc help {} {
+	send_user "\nAll commands proceeded with ctrl-a:
+	Ctrl-a ~.	close the vterm;
+	Ctrl-a bof	send \"dev /packages/gui obe\" to system;
+	Ctrl-a sms	wait for dropping into SMS;
+	Ctrl-a of	wait for dropping into O/F;
+	Ctrl-a st	try to get the state of current system from HMC;
+	Ctrl-a boot	try to active the system from the HMC;
+	Ctrl-a reboot	try to reboot the system from the HMC;
+	Ctrl-a shutdown	try to halt the system from the HMC;
+	
+After you have inputed \"Ctrl-a sms\" or \"Ctrl-a of\", before really dropping into SMS or O/F, the available commands is:
+	Ctrl-a q	quit from \"Ctrl-a sms\" or \"Ctrl-a of\";
+	Ctrl-a ~.	close the vterm;
+	"
+}
+
+send_user "Please type \"ctrl-a ?\" for help\n"
+
 interact {
+	"\001?" {
+		help
+	}
 	"\001a" {	;# how to input 'ctrl-a', learn from screen
 		send "\001"
 	}
