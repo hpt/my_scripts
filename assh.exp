@@ -89,5 +89,9 @@ if {[string length $cmd] > 0} {
 	interact {
 		"\001es" { send "set -o emacs\r"}
 		"\001ios" { send "/LTE/tools/ltpr/gss.ltpr -f IO\r"}
+		-o
+		timeout 600 {
+			send " \177"
+		}
 	}
 }
