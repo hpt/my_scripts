@@ -141,6 +141,7 @@ proc embed_interact {str_wait command message_enter message_leave} {
 
 proc help {} {
 	send_user "\nAll commands proceeded with ctrl-a:
+	Ctrl-a ?	help
 	Ctrl-a ~.	close the vterm;
 	Ctrl-a bof	send \"dev /packages/gui obe\" to system;
 	Ctrl-a sms	wait for dropping into SMS;
@@ -155,6 +156,9 @@ After you have inputed \"Ctrl-a sms\" or \"Ctrl-a of\", before really dropping i
 	Ctrl-a ~.	close the vterm;
 	"
 }
+
+set timeout 5
+expect timeout {} "Open Completed" {}
 
 send_user "Please type \"ctrl-a ?\" for help\n"
 
