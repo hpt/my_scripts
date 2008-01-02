@@ -157,11 +157,6 @@ After you have inputed \"Ctrl-a sms\" or \"Ctrl-a of\", before really dropping i
 	"
 }
 
-set timeout 5
-expect timeout {} "Open Completed" {}
-
-send_user "Please type \"ctrl-a ?\" for help\n"
-
 interact {
 	"\001?" {
 		help
