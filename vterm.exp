@@ -185,7 +185,7 @@ interact {
 	}
 	"\001reboot" {	
 		puts "Try to reboot $hostname from the HMC ..."
-		exec /LTE/tools/lp_reboot.sh $hostname &
+		exec /LTE/tools/lp_commands.sh reboot $hostname &
 	}
 	"\001boot" {	
 		puts "Try to active $hostname from the HMC ..."
