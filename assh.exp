@@ -11,10 +11,15 @@ set passwd "don2rry"
 # default spawn options ...
 set spawn_options {}
 
+# default program to run ...
+set prog "ssh"
+
 # 
 proc help {} {
 	global argv0
 	puts "Usage: $argv0 \[-p passwd] \[-s\] \[user@]hostname \[commands]"
+	puts "	or:"
+	puts "	$argv0 -r scp <scp filename convention>"
 }
 
 while {[llength $argv] > 0} {
@@ -22,6 +27,10 @@ while {[llength $argv] > 0} {
 	if {0==[regexp "^-" $flag]} break
 	set argv [lrange $argv 1 end]
 	switch -- $flag \
+		"-r" {
+			set prog [lindex $argv 0]
+			set argv [lrange $argv 1 end]
+		} \
 		"-p" {
 			set passwd [lindex $argv 0]
 			set argv [lrange $argv 1 end]
@@ -40,15 +49,22 @@ if {[llength $argv] < 1} {
 	exit 1
 }
 
-set machine [lindex $argv 0]
-set cmd [lindex $argv 1]
 
-if {! [string match "*?@?*" $machine]} {
-	set machine "root@$machine"
+if {[string equal "ssh" $prog]} {
+	set machine [lindex $argv 0]
+	set cmd [lindex $argv 1]
+	
+	if {! [string match "*?@?*" $machine]} {
+		set machine "root@$machine"
+	}
 }
 
 while 1 {
-	eval spawn $spawn_options ssh \$machine \$cmd
+	if {[string equal "ssh" $prog]} {
+		eval spawn $spawn_options $prog \$machine \$cmd
+	} else {
+		eval spawn $spawn_options $prog $argv
+	}
 	expect {
 		-re "assword: $" {
 			send "$passwd\r"
@@ -82,7 +98,7 @@ while 1 {
 	}
 }
 
-if {[string length $cmd] > 0} {
+if {! [info exists cmd] || [string length $cmd] > 0} {
 	set timeout -1
 	expect eof
 } else {
