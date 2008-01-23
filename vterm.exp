@@ -149,6 +149,7 @@ proc help {} {
 	Ctrl-a st	try to get the state of current system from HMC;
 	Ctrl-a boot	try to active the system from the HMC;
 	Ctrl-a reboot	try to reboot the system from the HMC;
+	Ctrl-a sreset	try to soft-reset the system from the HMC;
 	Ctrl-a shutdown	try to halt the system from the HMC;
 	
 After you have inputed \"Ctrl-a sms\" or \"Ctrl-a of\", before really dropping into SMS or O/F, the available commands is:
