@@ -57,6 +57,14 @@ if {[string equal "ssh" $prog]} {
 	if {! [string match "*?@?*" $machine]} {
 		set machine "root@$machine"
 	}
+} else {
+	set machine {}
+
+	foreach cmd $argv {
+		if { [regexp "@?(\[^@:]*):" $cmd all_match mname] } {
+			set machine [concat $machine $mname]
+		}
+	}
 }
 
 while 1 {
@@ -65,24 +73,47 @@ while 1 {
 	} else {
 		eval spawn $spawn_options $prog $argv
 	}
+
+	set machine_need_pwd [llength $machine]
+
 	expect {
 		-re "assword: $" {
 			send "$passwd\r"
-			break
+			if {$machine_need_pwd == 2} {
+				set machine_need_pwd [expr $machine_need_pwd - 1]
+				exp_continue
+			} else {
+				break
+			}
 		}
 		-exact "(yes/no)?" {
 			send "yes\r"
 			exp_continue
 		}
 		-exact "ailed." {
-			set m [string range $machine [expr [string first @ $machine] + 1] end]
-	                exec sh -c ". ~/.bashrc;rsk $m"
-	                # cann't define HOST in this scope,otherwise
-	                # after rsk will be none string.
-	                close
-	                wait
-	                continue
-	         }
+			if {[string equal "ssh" $prog]} {
+			       set m [string range $machine [expr [string first @ $machine] + 1] end]
+	         	       exec sh -c ". ~/.bashrc;rsk $m"
+	         	       # cann't define HOST in this scope,otherwise
+	         	       # after rsk will be none string.
+	         	       close
+	         	       wait
+	         	       continue
+	         	} else {	# for scp ...
+				if {[llength $machine] != 2} {
+					exec sh -c ". ~/.bashrc;rsk [lindex $machine 0]"
+					close
+					wait
+					continue
+				} else { # only wraning now ...
+					puts "Seems key verifying failed on localhost machine for [lindex $machine 0]"
+					puts "and/or"
+					puts "failed on [lindex $machine 0] for [lindex $machine 1]."
+					puts "Please check ..."
+					exit 3
+				}
+			}
+		}
 		-exact "onnection refuse" {  # for the host refuse to connect
                         puts "Connection refused to $machine"
                         exit 0
