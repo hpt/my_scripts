@@ -79,7 +79,7 @@ while 1 {
 	expect {
 		-re "assword: $" {
 			send "$passwd\r"
-			if {$machine_need_pwd == 2} {
+			if {$machine_need_pwd > 1} {
 				set machine_need_pwd [expr $machine_need_pwd - 1]
 				exp_continue
 			} else {
