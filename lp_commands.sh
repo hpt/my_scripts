@@ -61,8 +61,8 @@ auto_run ()
 
 usage()
 {
-    echo "USAGE:  lp_status.sh <action: active|reboot|shutdown|softreset|state> <hostname>"
-    echo "        lp_status.sh help"
+    echo "USAGE:  lp_commands.sh <action: active|reboot|shutdown|softreset|state|refcode> <hostname>"
+    echo "        lp_commands.sh help"
     exit 1
 }
 
@@ -98,6 +98,9 @@ if [ ! -z $1 ];then
         'reboot')
             cmd="chsysstate -r lpar -m $SYS -n $LPAR -o shutdown --immed --restart"
             ;;
+	'refcode')
+	    cmd="lsrefcode -r lpar -m $SYS -Flpar_name:refcode --filter \"lpar_names=$LPAR\""
+	    ;;
         'shutdown')
             cmd="chsysstate -r lpar -m $SYS -n $LPAR -o shutdown --immed"
             ;;
@@ -105,9 +108,8 @@ if [ ! -z $1 ];then
             cmd="chsysstate -r lpar -m $SYS -n $LPAR -o dumprestart "
             ;;
 	'state')
-	    cmd="lssyscfg -r lpar -m $SYS -Fname:state --filter \"\"lpar_names=$LPAR\"\""
+	    cmd="lssyscfg -r lpar -m $SYS -Fname:state --filter \"lpar_names=$LPAR\""
 	    ;;
-    			
         'help')
             usage
             ;;

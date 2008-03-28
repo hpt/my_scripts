@@ -146,6 +146,8 @@ proc help {} {
 	Ctrl-a bof	send \"dev /packages/gui obe\" to system;
 	Ctrl-a sms	wait for dropping into SMS;
 	Ctrl-a of	wait for dropping into O/F;
+	Ctrl-a ref	try to get the operator panel value of current
+			system from HMC;
 	Ctrl-a st	try to get the state of current system from HMC;
 	Ctrl-a boot	try to active the system from the HMC;
 	Ctrl-a reboot	try to reboot the system from the HMC;
@@ -199,6 +201,10 @@ interact {
 	"\001sreset" {
 		puts "Try to softreset $hostname from the HMC ..."
 		exec /LTE/tools/lp_commands.sh softreset $hostname &
+	}
+	"\001ref" {
+		puts "Try to get operator panel value of $hostname from the HMC ..."
+		exec /LTE/tools/lp_commands.sh refcode $hostname &
 	}
 	"\001st" {
 		puts "Try to get state of $hostname from the HMC ..."
