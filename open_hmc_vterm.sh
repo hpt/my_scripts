@@ -35,18 +35,31 @@ then
 	|| { sleep 1; cp $HMC_INFO_PATH $HMC_INFO_LOCAL 2>/dev/null; } \
 	|| { echo "copy $HMC_INFO_PATH to $HMC_INFO_LOCAL failed."; exit $E_INFO; }
 
-	FSP=`grep -w "$HMC:.*:$1" $HMC_INFO_LOCAL|cut -d':' -f 2`
-	if [ -z "$FSP" ]
+	cache_recorder=`grep -w "$HMC:.*:$1" $HMC_INFO_LOCAL`
+
+	# IVM? HMC?
+	if IVM_LPAR_ID=$(expr "`echo $cache_recorder |cut -s -d':' -f 3|cut -s -d',' -f2`" : "\([0-9]\+\)") 
 	then
-		echo "Cannot get the FSP name!"
-		exit $E_FSP
+		# IVM ...
+		cat > $VTERM_RECORDER <<-EOF
+		set $1 {"ssh padmin@$HMC" "" "padmin" "rmvt -id $IVM_LPAR_ID" "mkvt -id $IVM_LPAR_ID"}
+		EOF
+
+		$VTERM_PATH $1
+	else	# HMC ...
+		FSP=`echo $cache_recorder | grep -w "$HMC:.*:$1" |cut -s -d':' -f 2`
+		if [ -z "$FSP" ]
+		then
+			echo "Cannot get the FSP name!"
+			exit $E_FSP
+		fi
+
+		cat > $VTERM_RECORDER <<-EOF
+		set $1 {"ssh hscroot@$HMC" "" "abc123" "rmvterm -m $FSP -p $1" "mkvterm -m $FSP -p $1"}
+		EOF
+
+		$VTERM_PATH $1
 	fi
-
-	cat > $VTERM_RECORDER <<-EOF
-	set $1 {"ssh hscroot@$HMC" "" "abc123" "rmvterm -m $FSP -p $1" "mkvterm -m $FSP -p $1"}
-	EOF
-
-	$VTERM_PATH $1
 else
 	echo "Seems cannot find out related info about lpar $1."
 	exit $E_HMC
