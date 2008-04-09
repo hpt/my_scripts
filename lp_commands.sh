@@ -85,41 +85,42 @@ then
     exit
 fi
 
-HMC=`grep -w ".*:.*:$2" $CACHE_FILE | cut -d':' -f1|head -n1`
-SYS=`grep -w ".*:.*:$2" $CACHE_FILE | cut -d':' -f2|head -n1`
-LPAR=`grep -w ".*:.*:$2" $CACHE_FILE|tr -d '\r' | cut -d':' -f3|head -n1`
+cache_recorder=`grep -w ".*:.*:$2" $CACHE_FILE |head -n1`
+SERVER=`expr "$cache_recorder" : "\([^:]*\):"`
+FSP=`expr "$cache_recorder" : "[^:]*:\([^:]*\):"`
+LPAR=`expr "$cache_recorder" : "[^:]*:[^:]*:\([^,]*\)"`
+ID=`expr "$cache_recorder" : "[^:]*:[^:]*:[^,]*,\([0-9]\+\)"`
 
-if [ ! -z $1 ];then
-    OPERATION=$1
-    case ${OPERATION} in
-        'active')
-            cmd="chsysstate -r lpar -m $SYS -n $LPAR -o on -f $LPAR "
-            ;;
-        'reboot')
-            cmd="chsysstate -r lpar -m $SYS -n $LPAR -o shutdown --immed --restart"
-            ;;
-	'refcode')
-	    cmd="lsrefcode -r lpar -m $SYS -Flpar_name:refcode --filter \"lpar_names=$LPAR\""
-	    ;;
-        'shutdown')
-            cmd="chsysstate -r lpar -m $SYS -n $LPAR -o shutdown --immed"
-            ;;
-        'softreset')
-            cmd="chsysstate -r lpar -m $SYS -n $LPAR -o dumprestart "
-            ;;
-	'state')
-	    cmd="lssyscfg -r lpar -m $SYS -Fname:state --filter \"lpar_names=$LPAR\""
-	    ;;
-        'help')
-            usage
-            ;;
-        *)
+[[ -n "$ID" ]] && { username=padmin;passwd=padmin; } || { username=hscroot;passwd=abc123; }
+
+case $1 in
+    'active')
+        cmd="chsysstate -r lpar -m $FSP -n $LPAR -o on -f $LPAR "
+        ;;
+    'reboot')
+        cmd="chsysstate -r lpar -m $FSP -n $LPAR -o shutdown --immed --restart"
+        ;;
+    'refcode')
+        cmd="lsrefcode -r lpar -m $FSP -F lpar_name,refcode --filter \"lpar_names=$LPAR\""
+        ;;
+    'shutdown')
+        cmd="chsysstate -r lpar -m $FSP -n $LPAR -o shutdown --immed"
+        ;;
+    'softreset')
+        cmd="chsysstate -r lpar -m $FSP -n $LPAR -o dumprestart "
+        ;;
+    'state')
+        cmd="lssyscfg -r lpar -m $FSP -F name,state --filter \"lpar_names=$LPAR\""
+        ;;
+    'help')
         usage
         ;;
-    esac
-fi
+    *)
+    usage
+    ;;
+esac
 
-auto_run hscroot abc123 $HMC "$cmd"
+auto_run $username $passwd $SERVER "$cmd"
 
 ###############################################################
 # END
