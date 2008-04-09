@@ -74,7 +74,7 @@ if {0==[string first "ssh" $cmd_line]} {
 				send "yes\r"
 				exp_continue
 			}
-			"Password:" {
+			-re $passwd_prompt {
 				send "$passwd\r"
 				exp_continue
 			}
