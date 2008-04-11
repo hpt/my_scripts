@@ -85,7 +85,7 @@ then
     exit
 fi
 
-cache_recorder=`grep -w ".*:.*:$2" $CACHE_FILE |head -n1`
+cache_recorder=`grep -w ".*:.*:$2" $CACHE_FILE |head -n1|tr -d '\r'`
 SERVER=`expr "$cache_recorder" : "\([^:]*\):"`
 FSP=`expr "$cache_recorder" : "[^:]*:\([^:]*\):"`
 LPAR=`expr "$cache_recorder" : "[^:]*:[^:]*:\([^,]*\)"`
