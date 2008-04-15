@@ -11,7 +11,8 @@
 
 #konsole=$(dcopstart konsole-script)
 #session=$(dcop $konsole konsole currentSession)
-konsole=$(echo $KONSOLE_DCOP |cut -d'(' -f2|cut -d',' -f1)
+#konsole=$(echo $KONSOLE_DCOP |cut -d'(' -f2|cut -d',' -f1)
+konsole=$(dcopclient $KONSOLE_DCOP)
 
 vterm_open()
 {
