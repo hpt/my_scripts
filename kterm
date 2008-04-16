@@ -1,28 +1,62 @@
 #!/bin/sh
-#***************************************#
-#	a script to open vterm		#
-#***************************************#	
+#***********************************************************************#
+#	a script to open vterm or running a command for each 	     	#
+#	         machine in a bash tab of konsole		     	#
+#***********************************************************************#	
 
-# NOTE: 1.base on konsole & a expect script: vterm.exp
+# NOTE: 1.base on konsole & a expect script: vterm.exp (for open vterm. for run a 
+#	  command see below.)
 # 	2.konsole must be run with "--script" option!
 #	3.konsole must has a session named "vterm", which run vterm.exp
+#	4.for run a command in a bash tab for each machine, konsole must has a 
+#	  session named "bash"
 
-[[ $# -lt 1 ]] && { echo "Usage: $0 hostname1 hostname2 ...";exit 1; }
-
-#konsole=$(dcopstart konsole-script)
-#session=$(dcop $konsole konsole currentSession)
-#konsole=$(echo $KONSOLE_DCOP |cut -d'(' -f2|cut -d',' -f1)
-konsole=$(dcopclient $KONSOLE_DCOP)
-
-vterm_open()
+usage()
 {
-	session=$(dcop $konsole konsole newSession vterm)
+	cat <<-EOF
+	Usage:
+	1. $0 -r command host1 host2 ...: run command for each machine in a konsole tab;
+	2. $0 host1 host2 ....: open vterm of each machine in a konsole tab;
+	use -h for help.
+	EOF
+	exit 0
+}
+
+cmd=
+session=vterm
+
+while getopts "r:h" opt
+do
+	case $opt in
+		r) cmd=$OPTARG;session=bash;shift 2;;
+		*) usage;;
+	esac
+done
+
+[[ $# -lt 1 ]] && usage
+
+#konsole=$(echo $KONSOLE_DCOP |cut -d'(' -f2|cut -d',' -f1)
+konsole_id=$(dcopclient $KONSOLE_DCOP)
+
+tab_open()
+{
+	session_id=$(dcop $konsole_id konsole newSession $session)
 	sleep 1
-	dcop $konsole $session sendSession "$1"
-	dcop $konsole $session renameSession "$1"
+	case $session in
+		vterm)
+		dcop $konsole_id $session_id sendSession "$1"
+		;;
+		bash)
+		dcop $konsole_id $session_id sendSession "$cmd $1"
+		;;
+		*)
+		# are you sure???
+		;;
+	esac
+       	dcop $konsole_id $session_id renameSession "$1"
 }
 
 for h in $*
 do
-	vterm_open $h &
+	tab_open $h &
 done
