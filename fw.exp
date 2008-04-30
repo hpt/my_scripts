@@ -1,6 +1,7 @@
 #!/usr/bin/expect --
 # for passing through the local/remote BSO firewall
 #exp_internal -f /tmp/rw_debug 0
+set timeout 30
 
 log_user 0
 
