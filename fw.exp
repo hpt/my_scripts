@@ -1,7 +1,30 @@
 #!/usr/bin/expect --
 # for passing through the local/remote BSO firewall
 #exp_internal -f /tmp/rw_debug 0
-set timeout 30
+proc help {} {
+	global argv0
+	puts "Usage: $argv0 \[-h] \[-t timeout]"
+	exit 0
+}
+
+while {[llength $argv] > 0} {
+	set flag [lindex $argv 0]
+	if {0==[regexp "^-" $flag]} {
+		help
+	}
+	set argv [lrange $argv 1 end]
+	switch -- $flag \
+		"-h" {
+			help
+		} \
+		"-t" {
+			set timeout [lindex $argv 0]
+			break
+		} \
+		default {
+			help
+		}
+}
 
 log_user 0
 
