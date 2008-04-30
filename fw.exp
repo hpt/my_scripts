@@ -19,7 +19,8 @@ while {[llength $argv] > 0} {
 		} \
 		"-t" {
 			set timeout [lindex $argv 0]
-			break
+			set argv [lrange $argv 1 end]
+			continue
 		} \
 		default {
 			help
