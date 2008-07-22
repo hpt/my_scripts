@@ -35,18 +35,25 @@ set rid $spawn_id
 spawn telnet plinuxsrv
 set lid $spawn_id
 
-set id_list [list $rid $lid]
+spawn telnet directorttt.raleigh.ibm.com
+set raid $spawn_id
+
+set id_list [list $rid $lid $raid]
 
 proc check {} {
-	global id_list rid lid location expect_out
+	global id_list rid lid raid location expect_out
 
 	if {$expect_out(spawn_id) == $rid} {
 		set location "remote"
 		set i [lsearch $id_list $rid]
 		set id_list [lreplace $id_list $i $i]
-	} else {
+	} elseif {$expect_out(spawn_id) == $lid} {
 		set location "local"
 		set i [lsearch $id_list $lid]
+		set id_list [lreplace $id_list $i $i]
+	} elseif {$expect_out(spawn_id) == $raid} {
+		set location "raleigh"
+		set i [lsearch $id_list $raid]
 		set id_list [lreplace $id_list $i $i]
 	}
 }
