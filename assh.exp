@@ -19,7 +19,9 @@ proc help {} {
 	global argv0
 	puts "Usage: $argv0 \[-p passwd] \[-s\] \[-t timeout_var\] \[user@]hostname \[commands]"
 	puts "	or:"
-	puts "	$argv0 -r scp <scp filename convention>"
+	puts "	$argv0 -r scp <scp filename convention>, for copy file between hosts;"
+	puts "	or:"
+	puts "	$argv0 -r telnet -l <username> <hostname>, issue a telnet login."
 }
 
 while {[llength $argv] > 0} {
@@ -29,6 +31,10 @@ while {[llength $argv] > 0} {
 	switch -- $flag \
 		"-r" {
 			set prog [lindex $argv 0]
+			set argv [lrange $argv 1 end]
+		} \
+		"-l" {
+			set username [lindex $argv 0]
 			set argv [lrange $argv 1 end]
 		} \
 		"-p" {
@@ -61,14 +67,25 @@ if {[string equal "ssh" $prog]} {
 	if {! [string match "*?@?*" $machine]} {
 		set machine "root@$machine"
 	}
-} else {
+} elseif {[string equal "scp" $prog]} {
 	set machine {}
 
-	foreach cmd $argv {
-		if { [regexp "@?(\[^@:]*):" $cmd all_match mname] } {
+	foreach i $argv {
+		if { [regexp "@?(\[^@:]*):" $i all_match mname] } {
 			set machine [concat $machine $mname]
 		}
 	}
+} elseif {[string equal "telnet" $prog]} {
+	if {![info exists username]} {
+	    set username "root"
+	}
+
+	if {[llength $argv] != 1} {
+	    help
+	    exit 1
+	}
+
+	set machine [lindex $argv 0]
 }
 
 while 1 {
@@ -81,7 +98,11 @@ while 1 {
 	set machine_need_pwd [llength $machine]
 
 	expect {
-		-re "assword: $" {
+		-re "login: $" {
+			send "$username\r"
+			exp_continue
+		}
+		-re "assword:" {
 			send "$passwd\r"
 			if {$machine_need_pwd > 1} {
 				set machine_need_pwd [expr $machine_need_pwd - 1]
@@ -133,9 +154,10 @@ while 1 {
 	}
 }
 
-if {! [info exists cmd] || [string length $cmd] > 0} {
+if {[info exists cmd] && [string length $cmd] > 0} {
 	set timeout -1
 	expect eof
+puts "debuging ..."
 } else {
 	interact {
 		"\001es" { send "set -o emacs\r"}
