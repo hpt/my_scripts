@@ -29,7 +29,8 @@ while {[llength $argv] > 0} {
 
 log_user 0
 
-spawn telnet uptwiki
+#spawn telnet uptwiki
+spawn telnet apu03.austin.ibm.com
 set rid $spawn_id
 
 spawn telnet plinuxsrv
