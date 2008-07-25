@@ -11,13 +11,16 @@ set passwd "don2rry"
 # default spawn options ...
 set spawn_options {}
 
+# default commands options ...
+set options {}
+
 # default program to run ...
 set prog "ssh"
 
 # 
 proc help {} {
 	global argv0
-	puts "Usage: $argv0 \[-p passwd] \[-s\] \[-t timeout_var\] \[user@]hostname \[commands]"
+	puts "Usage: $argv0 \[-o options for the spawned commands] \[-p passwd] \[-s\] \[-t timeout_var\] \[user@]hostname \[commands]"
 	puts "	or:"
 	puts "	$argv0 -r scp <scp filename convention>, for copy file between hosts;"
 	puts "	or:"
@@ -29,6 +32,10 @@ while {[llength $argv] > 0} {
 	if {0==[regexp "^-" $flag]} break
 	set argv [lrange $argv 1 end]
 	switch -- $flag \
+		"-o" {
+			set options [lindex $argv 0]
+			set argv [lrange $argv 1 end]
+		} \
 		"-r" {
 			set prog [lindex $argv 0]
 			set argv [lrange $argv 1 end]
@@ -90,9 +97,9 @@ if {[string equal "ssh" $prog]} {
 
 while 1 {
 	if {[string equal "ssh" $prog]} {
-		eval spawn $spawn_options $prog \$machine \$cmd
+		eval spawn $spawn_options $prog $options \$machine \$cmd
 	} else {
-		eval spawn $spawn_options $prog $argv
+		eval spawn $spawn_options $prog $options $argv
 	}
 
 	set machine_need_pwd [llength $machine]
@@ -157,7 +164,6 @@ while 1 {
 if {[info exists cmd] && [string length $cmd] > 0} {
 	set timeout -1
 	expect eof
-puts "debuging ..."
 } else {
 	interact {
 		"\001es" { send "set -o emacs\r"}
