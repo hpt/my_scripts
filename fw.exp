@@ -29,17 +29,17 @@ while {[llength $argv] > 0} {
 
 log_user 0
 
-#spawn telnet uptwiki
-spawn telnet apu03.austin.ibm.com
+spawn telnet uptwiki
+#spawn telnet apu03.austin.ibm.com
 set rid $spawn_id
 
 spawn telnet plinuxsrv
 set lid $spawn_id
 
-spawn telnet directorttt.raleigh.ibm.com
-set raid $spawn_id
+#spawn telnet directorttt.raleigh.ibm.com
+#set raid $spawn_id
 
-set id_list [list $rid $lid $raid]
+set id_list [list $rid $lid]
 
 proc check {} {
 	global id_list rid lid raid location expect_out
