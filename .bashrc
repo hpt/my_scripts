@@ -174,6 +174,50 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+# func to get the "canonical path"
+# e.g. canpath /a/b/../c gets /a/c
+# author: http://groups.google.com/group/comp.unix.shell/browse_thread/thread/3a110ca144baa58b/b25627c1a2e7a4b5?lnk=raot#b25627c1a2e7a4b5
+canpath ()
+{
+    local OLDIFS="$IFS";
+    local i=1 over=0 tmp="$1" root='';
+    [[ $tmp == /* ]] && root=/;
+    IFS="/";
+    set -- ${tmp#/};
+    unset IFS;
+    while [[ $i -le $# ]]; do
+        if [[ ${@:i:1} = .. ]]; then
+            if [[ $i -eq 1 ]]; then
+                ((over++));
+                shift;
+                continue;
+            else
+                ((i-=2));
+                set -- "${@:1:i}" "${@:i+3}";
+            fi;
+        else
+            if [[ ${@:i:1} = . ]]; then
+                set -- "${@:1:i-1}" "${@:i+1}";
+                continue;
+            fi;
+        fi;
+        ((i++));
+    done;
+    tmp=;
+    IFS=/;
+    if [[ -n $root ]]; then
+        tmp="/$*";
+    else
+        for ((i=0; i<over; i++))
+        do
+            tmp+="../";
+        done;
+        tmp+="$*";
+    fi;
+    IFS="$OLDIFS";
+    echo "${tmp:-.}"
+}
+
 #export PROMPT_COMMAND='echo -ne "\0337\033[2;999r\033[1;1H\033[00;44m\033[K"`date "+%D %k:%M:%S"` CST"\033[00m\0338"'
 
 # for 'screen's dynamic window's title
