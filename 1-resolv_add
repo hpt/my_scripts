@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# add a search domain into /etc/resolv.conf when eth0 up.
+
+export LC_ALL=C
+
+if [[ $1 = eth0 && $2 = up ]]
+then
+    sed -i 's/\(search .*\)/\1 upt.austin.ibm.com/' /etc/resolv.conf
+fi
