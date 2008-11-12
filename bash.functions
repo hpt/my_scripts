@@ -6,4 +6,6 @@
 trap 'echo "Command failed: $BASH_COMMAND";exit 1' ERR
 
 # tesing
-ls /no/such/file
+[ ! -e "/no/such/file" ] && ls /no/such/file || echo "No such file."
+[ ! -e "/no/such/file" ] && echo "will run a cmd that would fail." && ls /no/such/file
+#[ ! -e "/no/such/file" ] && ls /no/such/file
