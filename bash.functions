@@ -10,8 +10,8 @@ trap 'echo "Command failed: $BASH_COMMAND";exit 1' ERR
 test()
 {
     echo "simple cmd running in a list" && ls nosuchfile || echo "Doesn't active the ERR trapping."
-    echo "testing block in a list" && { ls nosuchfile |grep -q nosuchfile;echo "OK?"; }
-    echo "in test() function."
+    #echo "testing block in a list" && { ls nosuchfile |grep -q nosuchfile;echo "OK?"; }
+    [[ -e nosuchfile ]] && echo "nosuchfile exists."
     return 0
 }
 
