@@ -1,11 +1,19 @@
 #!/bin/bash
-
-# echo a message about which command failed and exit when a 
+# echo a message about which command failed and exit when a
 # simple command being failed.
 #trap 'cmd=${BASH_COMMAND:-"some command"};echo "Command failed: $cmd";exit 1' ERR
+set -E
+
 trap 'echo "Command failed: $BASH_COMMAND";exit 1' ERR
 
 # tesing
-[ ! -e "/no/such/file" ] && ls /no/such/file || echo "No such file."
-[ ! -e "/no/such/file" ] && echo "will run a cmd that would fail." && ls /no/such/file
-#[ ! -e "/no/such/file" ] && ls /no/such/file
+test()
+{
+    echo "simple cmd running in a list" && ls nosuchfile || echo "Doesn't active the ERR trapping."
+    echo "testing block in a list" && { ls nosuchfile |grep -q nosuchfile;echo "OK?"; }
+    echo "in test() function."
+    return 0
+}
+
+echo "will run the testing." && test
+echo "Reach the END."
