@@ -1,6 +1,7 @@
 # .bashrc
 # try to have a look and edit history expansion before running ...
 shopt -s histverify
+shopt -s histreedit
 
 # User specific aliases and functions
 alias ll='ls -l'
