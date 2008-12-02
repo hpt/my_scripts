@@ -18,6 +18,8 @@ alias f='free -mo'
 alias mu='sudo mount /dev/sda1 /mnt/udisk'
 alias uu='sudo umount /mnt/udisk'
 alias grep='grep --color'
+# from coreutils' FAQ
+alias del='mv --verbose --backup=simple --suffix=$(date +".(%F_%T)") --target-directory=$HOME/.Trash/'
 
 # for readline bindings query:
 alias bindq='bind -q'
