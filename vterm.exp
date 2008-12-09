@@ -159,6 +159,8 @@ proc help {} {
 	Ctrl-a sreset	try to soft-reset the system from the HMC;
 	Ctrl-a shutdown	try to halt the system from the HMC;
 	Ctrl-a reactivate try to shutdown then active the system from the HMC;
+	Ctrl-a ta	toggle the keep-alive. When on, will send \" <backspace>\"
+			every 10 minutes.
 	
 After you have inputed \"Ctrl-a sms\" or \"Ctrl-a of\", before really dropping into SMS or O/F, the available commands is:
 	Ctrl-a q	quit from \"Ctrl-a sms\" or \"Ctrl-a of\";
@@ -166,6 +168,7 @@ After you have inputed \"Ctrl-a sms\" or \"Ctrl-a of\", before really dropping i
 	"
 }
 
+set keep_alive "send \" \\177\""
 interact {
 	"\001?" {
 		help
@@ -220,8 +223,17 @@ interact {
 		puts "Try to get state of $hostname from the HMC ..."
 		exec /LTE/tools/lp_commands.sh state $hostname &
 	}
+	"\001ta" {
+		if {$keep_alive != ""} {
+		    puts "Turn off keep-alive."
+		    set keep_alive ""
+		} else {
+		    puts "Turn on keep-alive."
+		    set keep_alive "send \" \\177\""
+		}
+	}
 	-o
 	timeout 600 {
-		send " \177"
+		eval $keep_alive
 	}
 }
