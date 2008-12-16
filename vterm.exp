@@ -131,11 +131,6 @@ proc embed_interact {str_wait command message_enter message_leave} {
 		}
 		-nobuffer -re "$str_wait" {
 			send "$command\r"
-			    expect {
-				"0 >" {
-			send "boot\r"
-				}
-			    }
 			return
 		}
 		timeout 600 {
