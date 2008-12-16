@@ -61,7 +61,7 @@ auto_run ()
 
 usage()
 {
-    echo "USAGE:  lp_commands.sh <action: active|reboot|shutdown|softreset|state|refcode> <hostname>"
+    echo "USAGE:  lp_commands.sh <action: active|reboot|shutdown|softreset|state|refcode|profile> <hostname>"
     echo "        lp_commands.sh help"
     exit 1
 }
@@ -95,7 +95,14 @@ ID=`expr "$cache_recorder" : "[^:]*:[^:]*:[^,]*,\([0-9]\+\)"`
 
 case $1 in
     'active')
-        cmd="chsysstate -r lpar -m $FSP -n $LPAR -o on -f $LPAR "
+        #cmd="chsysstate -r lpar -m $FSP -n $LPAR -o on -f $LPAR "
+	cmd="lssyscfg -r lpar -m $FSP -Fname:curr_profile --filter \"lpar_names=$LPAR\""
+	    PROFILE=`auto_run $username $passwd $SERVER "$cmd" | tail -n 1 | tr '\r' ' ' | cut -d':' -f2 | awk '{print $1}'`
+	    if [[ -z "$PROFILE" ]]; then
+                cmd="chsysstate -r lpar -m $FSP -n $LPAR -o on -f $LPAR"
+	    else	
+                cmd="chsysstate -r lpar -m $FSP -n $LPAR -o on -f $PROFILE"
+	    fi
         ;;
     'reboot')
         cmd="chsysstate -r lpar -m $FSP -n $LPAR -o shutdown --immed --restart"
@@ -112,6 +119,9 @@ case $1 in
     'state')
         cmd="lssyscfg -r lpar -m $FSP -F name,state --filter \"lpar_names=$LPAR\""
         ;;
+    'profile')
+	cmd="lssyscfg -r lpar -m $FSP -Fname:curr_profile --filter \"lpar_names=$LPAR\""
+	;;
     'help')
         usage
         ;;

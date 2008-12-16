@@ -232,6 +232,10 @@ interact {
 		    set keep_alive "send \" \\177\""
 		}
 	}
+	"\001pf" {
+		puts "Try to get current profile of $hostname from the HMC ..."
+		exec /LTE/tools/lp_commands.sh profile $hostname &
+	}
 	-o
 	timeout 600 {
 		eval $keep_alive
