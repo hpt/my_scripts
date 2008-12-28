@@ -27,15 +27,17 @@ function rebuild_line(	n,f,i,inFld)
 			rebuild_line()
 			if (NF != 48)
 				continue
-			if ($21 ~ / |/) 	# no serial number ...
+			
+			if (length($21) <=2 ) {	# no serial number ...
 				no_serial = 1
+			}
 
 			break
 		}
 
 		# print the header ...
 		n = split(header,f,SUBSEP)
-		if (!no_serial)
+		if (no_serial)
 			print "PO#,"f[4]","f[8]","f[9]","f[13]","f[14]","f[22]","f[24]","f[25]
 		else
 			print "PO#,"f[4]","f[8]","f[9]","f[21]","f[25]
@@ -45,7 +47,7 @@ function rebuild_line(	n,f,i,inFld)
 	if (!header_printed)
 		next
 
-	if (!no_serial) 
+	if (no_serial) 
 	    print pon","$4","$8","$9","$13","$14","$22","$24","$25
 	else {
 		gsub(/"/,"",$21)	# remove the ^" and "$
