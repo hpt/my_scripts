@@ -196,27 +196,27 @@ interact {
 	}
 	"\001boot" {	
 		puts "Try to active $hostname from the HMC ..."
-		exec /LTE/tools/lp_commands.sh active $hostname &
+		system /LTE/tools/lp_commands.sh active $hostname &
 	}
 	"\001reactivate" {
 		puts "Try to shutdown and then active $hostname from the HMC ..."
-		exec /LTE/tools/lp_reactivate.sh $hostname &
+		system /LTE/tools/lp_reactivate.sh $hostname &
 	}
 	"\001shutdown" {
 		puts "Try to shutdown $hostname from the HMC ..."
-		exec /LTE/tools/lp_commands.sh shutdown $hostname &
+		system /LTE/tools/lp_commands.sh shutdown $hostname &
 	}
 	"\001sreset" {
 		puts "Try to softreset $hostname from the HMC ..."
-		exec /LTE/tools/lp_commands.sh softreset $hostname &
+		system /LTE/tools/lp_commands.sh softreset $hostname &
 	}
 	"\001ref" {
 		puts "Try to get operator panel value of $hostname from the HMC ..."
-		exec /LTE/tools/lp_commands.sh refcode $hostname &
+		system /LTE/tools/lp_commands.sh refcode $hostname &
 	}
 	"\001st" {
 		puts "Try to get state of $hostname from the HMC ..."
-		exec /LTE/tools/lp_commands.sh state $hostname &
+		system /LTE/tools/lp_commands.sh state $hostname &
 	}
 	"\001ta" {
 		if {$keep_alive != ""} {
@@ -229,7 +229,7 @@ interact {
 	}
 	"\001pf" {
 		puts "Try to get current profile of $hostname from the HMC ..."
-		exec /LTE/tools/lp_commands.sh profile $hostname &
+		system /LTE/tools/lp_commands.sh profile $hostname &
 	}
 	-o
 	timeout 600 {
