@@ -1,4 +1,9 @@
 # .bashrc
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
 # try to have a look and edit history expansion before running ...
 shopt -s histverify
 shopt -s histreedit
@@ -56,6 +61,11 @@ alias qm='qmake -project;qmake;make'
 # for telnet to AIX with TERM set to vt100
 alias telnet='TERM=vt100 telnet'
 
+
+# when running int SCREEN, using the better complete. works with Fedora10
+if [ -n "$STY" ];then
+    complete -o filenames -F _root_command screen
+fi
 
 ## FUNCTIONS
 # query which package the command belonging to
@@ -171,11 +181,6 @@ gp()
 {
 	grep "$1" /home/hpt/source/apue_for_linux/Sourcefiles;
 }	
-
-# Source global definitions
-if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
-fi
 
 # func to get the "canonical path"
 # e.g. canpath /a/b/../c gets /a/c
