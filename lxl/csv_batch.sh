@@ -11,7 +11,7 @@ DET_DIR=`zenity --file-selection --directory --save --title="请指定一个存�
 
 for f in $SRC_DIR/*
 do
-	PO=$(expr "$f" : '.*-\([^-]\+\)-.*')
+	PO=$(expr "$f" : '.*-\([^-]\{8,\}\)-.*')
 	[ -z "$PO" ] && zenity --error --text="$f: 文件名中没有PO号！" && continue
 	{ awk -v PO=$PO -f $BIN_PATH/csv.awk $f > $DET_DIR/$PO.csv \
 		&& { succeeded_files=$succeeded_files" "$f;zenity --info --text="已经由$f生成$DET_DIR/$PO.csv。"; }; }\
