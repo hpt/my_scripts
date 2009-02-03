@@ -1,5 +1,6 @@
 #!/bin/bash
 CACHE_FILE="/data/.show_machine_on_hmc/cache"
+MACHINES_INFO=$HOME/etc/show_hmc.conf
 
 
 ##################################################################
@@ -66,6 +67,21 @@ usage()
     exit 1
 }
 
+##############################################################
+#  get account infos
+##############################################################
+get_username_passwd()
+{
+    source $MACHINES_INFO
+    for serv_arr_name in ${!SERVERS@};do
+	eval sa=(\${${serv_arr_name}[@]})
+	if echo ${sa[@]} | grep -q $1;then
+	    username=${sa[1]}
+	    passwd=${sa[2]}
+	    break
+	fi
+    done
+}
 
 ##############################################################
 #  START
@@ -91,7 +107,8 @@ FSP=`expr "$cache_recorder" : "[^:]*:\([^:]*\):"`
 LPAR=`expr "$cache_recorder" : "[^:]*:[^:]*:\([^,]*\)"`
 ID=`expr "$cache_recorder" : "[^:]*:[^:]*:[^,]*,\([0-9]\+\)"`
 
-[[ -n "$ID" ]] && { username=padmin;passwd=padmin; } || { username=hscroot;passwd=abc123; }
+#[[ -n "$ID" ]] && { username=padmin;passwd=padmin; } || { username=hscroot;passwd=abc123; }
+get_username_passwd $SERVER
 
 case $1 in
     'active')
