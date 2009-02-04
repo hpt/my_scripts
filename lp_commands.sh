@@ -62,7 +62,7 @@ auto_run ()
 
 usage()
 {
-    echo "USAGE:  lp_commands.sh <action: active|reboot|shutdown|softreset|state|refcode|profile> <hostname>"
+    echo "USAGE:  lp_commands.sh <action: active|reboot|shutdown|softreset|state|refcode|cprofile|dprofile> <hostname>"
     echo "        lp_commands.sh help"
     exit 1
 }
@@ -116,6 +116,11 @@ case $1 in
 	cmd="lssyscfg -r lpar -m $FSP -Fname:curr_profile --filter \"lpar_names=$LPAR\""
 	    PROFILE=`auto_run $username $passwd $SERVER "$cmd" | tail -n 1 | tr '\r' ' ' | cut -d':' -f2 | awk '{print $1}'`
 	    if [[ -z "$PROFILE" ]]; then
+		cmd="lssyscfg -r lpar -m $FSP -Fname:default_profile --filter \"lpar_names=$LPAR\""
+		PROFILE=`auto_run $username $passwd $SERVER "$cmd" | tail -n 1 | tr '\r' ' ' | cut -d':' -f2 | awk '{print $1}'`
+	    fi
+
+	    if [[ -z "$PROFILE" ]]; then
                 cmd="chsysstate -r lpar -m $FSP -n $LPAR -o on -f $LPAR"
 	    else	
                 cmd="chsysstate -r lpar -m $FSP -n $LPAR -o on -f $PROFILE"
@@ -136,8 +141,11 @@ case $1 in
     'state')
         cmd="lssyscfg -r lpar -m $FSP -F name,state --filter \"lpar_names=$LPAR\""
         ;;
-    'profile')
+    'cprofile')
 	cmd="lssyscfg -r lpar -m $FSP -Fname:curr_profile --filter \"lpar_names=$LPAR\""
+	;;
+    'dprofile')
+	cmd="lssyscfg -r lpar -m $FSP -Fname:default_profile --filter \"lpar_names=$LPAR\""
 	;;
     'help')
         usage
