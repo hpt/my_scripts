@@ -154,6 +154,8 @@ proc help {} {
 	Ctrl-a sreset	try to soft-reset the system from the HMC;
 	Ctrl-a shutdown	try to halt the system from the HMC;
 	Ctrl-a reactivate try to shutdown then active the system from the HMC;
+	Ctrl-a cpf	try to get the current profile file of the lpar;
+	Ctrl-a dpf	try to get the default profile file of the lpar;
 	Ctrl-a ta	toggle the keep-alive. When on, will send \" <backspace>\"
 			every 10 minutes.
 	
@@ -227,9 +229,13 @@ interact {
 		    set keep_alive "send \" \\177\""
 		}
 	}
-	"\001pf" {
+	"\001cpf" {
 		puts "Try to get current profile of $hostname from the HMC ..."
-		exec /LTE/tools/lp_commands.sh profile $hostname &
+		exec /LTE/tools/lp_commands.sh cprofile $hostname &
+	}
+	"\001dpf" {
+		puts "Try to get default profile of $hostname from the HMC ..."
+		exec /LTE/tools/lp_commands.sh dprofile $hostname &
 	}
 	-o
 	timeout 600 {
