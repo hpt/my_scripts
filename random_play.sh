@@ -1,6 +1,7 @@
 #!/bin/bash
-n=$(ls -1 /home/hpt/Music/*.mp3|wc -l);
+MUSIC_PATH="$HOME/Music/"
 IFS=$'\n'
-musics=($(ls -1 /home/hpt/Music/*.mp3));
-n=$(echo "$RANDOM % $n + 1"|bc);
-mpg321 "${musics[n-1]}";
+musics=($(ls -1 $MUSIC_PATH/*.mp3));
+n=${#musics[@]}
+n=$(echo "$RANDOM % $n"|bc);
+mpg321 "${musics[n]}";
