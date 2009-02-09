@@ -18,6 +18,15 @@ function rebuild_line(	n,f,i,inFld)
 
 {
 	rebuild_line()
+	if ($1 ~ /Sales Order:/) {
+		SO=$2
+		next
+	}
+	if ($1 ~ /Date Submitted:/) {
+		DS=$2
+		next
+	}
+
 	if (NF != 48)
 		next
 
@@ -41,7 +50,7 @@ function rebuild_line(	n,f,i,inFld)
 		# print the header ...
 		n = split(header,f,SUBSEP)
 		if (no_serial)
-			print "PO#,"f[4]","f[8]","f[9]","f[13]","f[14]","f[22]","f[24]","f[25]
+			print "PO#,Sales Order,"f[4]","f[8]","f[9]","f[13]","f[14]",Date Submitted,"f[22]","f[24]","f[25]
 		else
 			print "PO#,"f[4]","f[8]","f[9]","f[21]","f[25]
 		header_printed = 1
@@ -53,7 +62,7 @@ function rebuild_line(	n,f,i,inFld)
 	if (no_serial) { 		# all lines have no serial number ...
 		for(i=1;i<=j;i++) {
 			n = split(lines_no_serial[i],f,SUBSEP)
-			print pon","f[4]","f[8]","f[9]","f[13]","f[14]","f[22]","f[24]","f[25]
+			print pon","SO","f[4]","f[8]","f[9]","f[13]","f[14]","DS","f[22]","f[24]","f[25]
 		}
 	} else {
 		gsub(/"/,"",$21)	# remove the ^" and "$
