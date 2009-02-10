@@ -4,6 +4,9 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+# for using ctrl-s in readline as forward-search-history
+stty -ixon
+
 # try to have a look and edit history expansion before running ...
 shopt -s histverify
 shopt -s histreedit
