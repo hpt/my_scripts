@@ -52,7 +52,7 @@ function rebuild_line(	n,f,i,inFld)
 		if (no_serial)
 			print "PO#,Sales Order,"f[4]","f[8]","f[9]","f[13]","f[14]",Date Submitted,"f[22]","f[24]","f[25]
 		else
-			print "PO#,"f[4]","f[8]","f[9]","f[21]","f[25]
+			print "PO#,"f[4]","f[8]","f[9]","f[21]","f[25]","f[13]
 		header_printed = 1
 	}
 
@@ -66,9 +66,10 @@ function rebuild_line(	n,f,i,inFld)
 		}
 	} else {
 		gsub(/"/,"",$21)	# remove the ^" and "$
+		gsub(/"/,"",$13)
 		n = split($21,f,",")	# base on the 21th -- serial number
 		for (i=1;i<=n;i++) {
-			print pon","$4","$8","$9","f[i]","$25
+			print pon","$4","$8","$9","f[i]","$25","$13
 		}
 	}
 }
