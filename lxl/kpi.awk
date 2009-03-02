@@ -1,6 +1,7 @@
 #!/usr/bin/gawk --exec
 BEGIN { 
-	FS=OFS=SUBSEP 
+	FS=SUBSEP 
+	OFS=" "
 	#IGNORECASE=1
 } 
 function rebuild_line(	n,f,i,inFld)
@@ -470,48 +471,48 @@ NF == 15 {				    # works on stock data ...
 }
 
 END{
-    print "LENOVO_PC"	  " " LENOVO_PC	" "	LENOVO_PC_STOCK
-    print "LENOVO_NP"	  " " LENOVO_NP       " "    LENOVO_NP_STOCK
-    print "LENOVO_OTHER" " " LENOVO_OTHER    " "    LENOVO_OTHER_STOCK
-    print "IBM_SER_HK"   " " IBM_SER_HK      " "    IBM_SER_HK_STOCK
-    print "IBM_STRG_HK"  " " IBM_STRG_HK     " "    IBM_STRG_HK_STOCK
-    print "IBM_SOFW"     " " IBM_SOFW        " "    IBM_SOFW_STOCK
-    print "NETGE"        " " NETGE           " "    NETGE_STOCK
-    print "SAMSU_CMCL"   " " SAMSU_CMCL      " "    SAMSU_CMCL_STOCK
-    print "HP_WOKSTAN"   " " HP_WOKSTAN      " "    HP_WOKSTAN_STOCK
-    print "HP_RPOS"      " " HP_RPOS         " "    HP_RPOS_STOCK
-    print "HPB_NB"       " " HPB_NB          " "    HPB_NB_STOCK
-    print "HP_BPC_NON_RD"" " HP_BPC_NON_RD   " "    HP_BPC_NON_RD_STOCK
-    print "HP_BNB_NON_RD"" " HP_BNB_NON_RD   " "    HP_BNB_NON_RD_STOCK
-    print "HP_NT_SERVER" " " HP_NT_SERVER    " "    HP_NT_SERVER_STOCK
-    print "HP_GD_RD"     " " HP_GD_RD        " "    HP_GD_RD_STOCK
-    print "HP_SW_RD"     " " HP_SW_RD        " "    HP_SW_RD_STOCK
-    print "HPPM"         " " HPPM            " "    HPPM_STOCK
-    print "APC"          " " APC             " "    APC_STOCK
-    print "HP_TD_TL"     " " HP_TD_TL        " "    HP_TD_TL_STOCK
-    print "HP_DISK_ARRAY"" " HP_DISK_ARRAY   " "    HP_DISK_ARRAY_STOCK
-    print "HP_MEDIA"     " " HP_MEDIA        " "    HP_MEDIA_STOCK
-    print "QLOGIC_CN"    " " QLOGIC_CN       " "    QLOGIC_CN_STOCK
-    print "DLINK"        " " DLINK           " "    DLINK_STOCK
-    print "RUIJI"        " " RUIJI           " "    RUIJI_STOCK
-    print "HUAW_RW"      " " HUAW_RW         " "    HUAW_RW_STOCK
-    print "H3C"          " " H3C             " "    H3C_STOCK
-    print "ZTE_NET"      " " ZTE_NET         " "    ZTE_NET_STOCK
-    print "LENOVO_SER_RD"" " LENOVO_SER_RD   " "    LENOVO_SER_RD_STOCK
-    print "EIZO_HK"      " " EIZO_HK         " "    EIZO_HK_STOCK
-    print "EIZO_CN"      " " EIZO_CN         " "    EIZO_CN_STOCK
-    print "APC_HK"       " " APC_HK          " "    APC_HK_STOCK
-    print "QLOGIC_HK"    " " QLOGIC_HK       " "    QLOGIC_HK_STOCK
-    print "MATROX_HK"    " " MATROX_HK       " "    MATROX_HK_STOCK
-    print "MATROX_CN"    " " MATROX_CN       " "    MATROX_CN_STOCK
-    print "HP_UNIX_SER"  " " HP_UNIX_SER     " "    HP_UNIX_SER_STOCK
-    print "HP_VAL_STORG" " " HP_VAL_STORG    " "    HP_VAL_STORG_STOCK
-    print "NETAPP"       " " NETAPP          " "    NETAPP_STOCK
-    print "JUNIPER"      " " JUNIPER         " "    JUNIPER_STOCK
-    print "HS"           " " HS              " "    HS_STOCK
-    print "HUAWEI_HZ"    " " HUAWEI_HZ       " "    HUAWEI_HZ_STOCK
-    print "CISCO"        " " CISCO           " "    CISCO_STOCK
-    print "EXTREME"      " " EXTREME         " "    EXTREME_STOCK
-    print "SIEMENS"      " " SIEMENS         " "    SIEMENS_STOCK
-    print "IBM_SER"      " " IBM_SER         " "    IBM_SER_STOCK
+    print "LENOVO_PC"	 , LENOVO_PC	,LENOVO_PC_STOCK
+    print "LENOVO_NP"	 , LENOVO_NP    ,  LENOVO_NP_STOCK
+    print "LENOVO_OTHER" , LENOVO_OTHER ,  LENOVO_OTHER_STOCK
+    print "IBM_SER_HK"   , IBM_SER_HK   ,  IBM_SER_HK_STOCK
+    print "IBM_STRG_HK"  , IBM_STRG_HK  ,  IBM_STRG_HK_STOCK
+    print "IBM_SOFW"     , IBM_SOFW     ,  IBM_SOFW_STOCK
+    print "NETGE"        , NETGE        ,  NETGE_STOCK
+    print "SAMSU_CMCL"   , SAMSU_CMCL   ,  SAMSU_CMCL_STOCK
+    print "HP_WOKSTAN"   , HP_WOKSTAN   ,  HP_WOKSTAN_STOCK
+    print "HP_RPOS"      , HP_RPOS      ,  HP_RPOS_STOCK
+    print "HPB_NB"       , HPB_NB       ,  HPB_NB_STOCK
+    print "HP_BPC_NON_RD", HP_BPC_NON_RD,  HP_BPC_NON_RD_STOCK
+    print "HP_BNB_NON_RD", HP_BNB_NON_RD,  HP_BNB_NON_RD_STOCK
+    print "HP_NT_SERVER" , HP_NT_SERVER ,  HP_NT_SERVER_STOCK
+    print "HP_GD_RD"     , HP_GD_RD     ,  HP_GD_RD_STOCK
+    print "HP_SW_RD"     , HP_SW_RD     ,  HP_SW_RD_STOCK
+    print "HPPM"         , HPPM         ,  HPPM_STOCK
+    print "APC"          , APC          ,  APC_STOCK
+    print "HP_TD_TL"     , HP_TD_TL     ,  HP_TD_TL_STOCK
+    print "HP_DISK_ARRAY", HP_DISK_ARRAY,  HP_DISK_ARRAY_STOCK
+    print "HP_MEDIA"     , HP_MEDIA     ,  HP_MEDIA_STOCK
+    print "QLOGIC_CN"    , QLOGIC_CN    ,  QLOGIC_CN_STOCK
+    print "DLINK"        , DLINK        ,  DLINK_STOCK
+    print "RUIJI"        , RUIJI        ,  RUIJI_STOCK
+    print "HUAW_RW"      , HUAW_RW      ,  HUAW_RW_STOCK
+    print "H3C"          , H3C          ,  H3C_STOCK
+    print "ZTE_NET"      , ZTE_NET      ,  ZTE_NET_STOCK
+    print "LENOVO_SER_RD", LENOVO_SER_RD,  LENOVO_SER_RD_STOCK
+    print "EIZO_HK"      , EIZO_HK      ,  EIZO_HK_STOCK
+    print "EIZO_CN"      , EIZO_CN      ,  EIZO_CN_STOCK
+    print "APC_HK"       , APC_HK       ,  APC_HK_STOCK
+    print "QLOGIC_HK"    , QLOGIC_HK    ,  QLOGIC_HK_STOCK
+    print "MATROX_HK"    , MATROX_HK    ,  MATROX_HK_STOCK
+    print "MATROX_CN"    , MATROX_CN    ,  MATROX_CN_STOCK
+    print "HP_UNIX_SER"  , HP_UNIX_SER  ,  HP_UNIX_SER_STOCK
+    print "HP_VAL_STORG" , HP_VAL_STORG ,  HP_VAL_STORG_STOCK
+    print "NETAPP"       , NETAPP       ,  NETAPP_STOCK
+    print "JUNIPER"      , JUNIPER      ,  JUNIPER_STOCK
+    print "HS"           , HS           ,  HS_STOCK
+    print "HUAWEI_HZ"    , HUAWEI_HZ    ,  HUAWEI_HZ_STOCK
+    print "CISCO"        , CISCO        ,  CISCO_STOCK
+    print "EXTREME"      , EXTREME      ,  EXTREME_STOCK
+    print "SIEMENS"      , SIEMENS      ,  SIEMENS_STOCK
+    print "IBM_SER"      , IBM_SER      ,  IBM_SER_STOCK
 }
