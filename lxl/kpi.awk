@@ -78,12 +78,12 @@ NF == 35 {		    # works on sales data ...
         next
     }
     #HP BPC NON-RD
-    if (CNTRY == "CN" && BRAND == "HPB" && PM == "EO" && CS !~ /CC|DR|HD|NA|NC|SV|UP/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ/ ) {
+    if (CNTRY == "CN" && BRAND == "HPB" && PM == "EO" && CS !~ /CC|DR|HD|NA|NC|SV|UP/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
         HP_BPC_NON_RD+=money
         next
     }
     #HP BNB Non-RD
-    if (CNTRY == "CN" && BRAND == "HPB" && PM == "HW" && CS ~ /NB/ && OFIC !~ /GZ|SZ|DG|FS|CD|CQ|KM|GY|LS|ST/ ) {
+    if (CNTRY == "CN" && BRAND == "HPB" && PM == "HW" && CS ~ /NB/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
         HP_BNB_NON_RD+=money
         next
     }
@@ -304,12 +304,12 @@ NF == 15 {				    # works on stock data ...
         next
     }
     #HP BPC NON-RD
-    if ( BRAND == "HPB" && PM == "EO" && CS !~ /CC|DR|HD|NA|NC|SV|UP/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ/ ) {
+    if ( BRAND == "HPB" && PM == "EO" && CS !~ /CC|DR|HD|NA|NC|SV|UP/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
         HP_BPC_NON_RD_STOCK+=money
         next
     }
     #HP BNB Non-RD
-    if ( BRAND == "HPB" && PM == "HW" && CS ~ /NB/ && OFIC !~ /GZ|SZ|DG|FS|CD|CQ|KM|GY|LS|ST/ ) {
+    if ( BRAND == "HPB" && PM == "HW" && CS ~ /NB/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
         HP_BNB_NON_RD_STOCK+=money
         next
     }
