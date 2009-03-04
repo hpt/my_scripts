@@ -1,7 +1,7 @@
 #!/usr/bin/gawk --exec
 BEGIN { 
 	FS=SUBSEP 
-	OFS=" "
+	OFS=","
 	#IGNORECASE=1
 } 
 function rebuild_line(	n,f,i,inFld)
