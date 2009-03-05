@@ -14,6 +14,8 @@ function rebuild_line(	n,f,i,inFld)
     }
 }
 
+FNR==1{next}
+
 {
     gsub(/[[:blank:]]+/,"")
     rebuild_line()
