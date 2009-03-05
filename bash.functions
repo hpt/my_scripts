@@ -17,3 +17,11 @@ test()
 
 echo "will run the testing." && test
 echo "Reach the END."
+
+# base on a word, find it sound int WyabdcRealPeopleTTS and play 
+sound()
+{ 
+    sub_dir=${1:0:1}
+    none=$(find /usr/share/WyabdcRealPeopleTTS/$sub_dir/ -name ${1}.wav)
+    play ${none:-/usr/share/WyabdcRealPeopleTTS/n/none.wav} 
+}
