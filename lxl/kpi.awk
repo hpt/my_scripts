@@ -21,227 +21,272 @@ FNR==1{next}
     rebuild_line()
 }
 NF == 35 {		    # works on sales data ...
-    #COUNTRY/COMPANY 18|BRAND/IMBRCODE 14|   PM 17  |   CS CODE 28  | OFFICE 19	|
+    #COUNTRY/COMPANY 18|BRAND/IMBRCODE 14|   PM 17  |   CS CODE 28  | OFFICE 19	| GPVALE 23 |
     CNTRY=$18;		BRAND=$14;	    PM=$17;	CS=$28;	    OFIC=$19
     money=$25
+    gpvalue=$23
     #LENOVO PC 
     if (CNTRY == "HK" && BRAND == "LENOV" && PM == "CA" && CS ~ /LD|PC/ && OFIC == "HK" ) {
         LENOVO_PC+=money
+	LENOVO_PC_GPV+=gpvalue
         next
     }
     #LENOVO NB
     if (CNTRY == "HK" && BRAND == "LENOV" && PM == "CA" && CS == "NB" && OFIC == "HK" ) {
         LENOVO_NP+=money
+	LENOVO_NP_GPV+=gpvalue
         next
     }
     #LENOVO OTHER
     if (CNTRY == "HK" && BRAND == "LENOV" && PM == "CA" && CS !~ /LD|NB|PC/ && OFIC == "HK" ) {
         LENOVO_OTHER+=money
+	LENOVO_OTHER_GPV+=gpvalue
         next
     }
     #IBM SERVER(HK)
     if (CNTRY == "HK" && BRAND == "IBM" && PM == "MX" && CS != "NS" && OFIC == "HK" ) {
 	IBM_SER_HK+=money
+	IBM_SER_HK_GPV+=gpvalue
 	next
     }
     #IBM STORAGE(HK)
     if (CNTRY == "HK" && BRAND == "IBM" && PM == "MX" && CS == "NS" && OFIC == "HK" ) {
         IBM_STRG_HK+=money
+	IBM_STRG_HK_GPV+=gpvalue
         next
     }
     #IBM SOFTWARE   CS CODE: ALL
     if (CNTRY == "HK" && BRAND == "LOTUS" && PM == "MX" && OFIC == "HK" ) {
         IBM_SOFW+=money
+	IBM_SOFW_GPV+=gpvalue
         next
     }
     #NETGEAR	CS CODE:ALL
     if (CNTRY == "HK" && BRAND == "NETGE" && PM == "MB" && OFIC == "HK" ) {
         NETGE+=money
+	NETGE_GPV+=gpvalue
         next
     }
     #SAMSUNG COMMERCIAL CS CODE:ALL
     if (CNTRY == "HK" && BRAND == "SAMSU" && PM == "MB" && OFIC == "HK" ) {
         SAMSU_CMCL+=money
+	SAMSU_CMCL_GPV+=gpvalue
         next
     }
     #HP WORKSTATION 
     if (CNTRY == "HK" && BRAND == "HPB" && PM == "MB" && CS ~ /PB/ && OFIC == "HK" ) {
         HP_WOKSTAN+=money
+	HP_WOKSTAN_GPV+=gpvalue
         next
     }
     #HP RPOS
     if (CNTRY == "HK" && BRAND == "HPB" && PM == "MB" && CS ~ /HO/ && OFIC == "HK" ) {
         HP_RPOS+=money
+	HP_RPOS_GPV+=gpvalue
         next
     }
     #HPB NB
     if (CNTRY == "HK" && BRAND == "HP" && PM == "FS" && CS ~ /NB/ && OFIC == "HK" ) {
         HPB_NB+=money
+	HPB_NB_GPV+=gpvalue
         next
     }
     #HP BPC NON-RD
     if (CNTRY == "CN" && BRAND == "HPB" && PM == "EO" && CS !~ /CC|DR|HD|NA|NC|SV|UP/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
         HP_BPC_NON_RD+=money
+	HP_BPC_NON_RD_GPV+=gpvalue
         next
     }
     #HP BNB Non-RD
     if (CNTRY == "CN" && BRAND == "HPB" && PM == "HW" && CS ~ /NB/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
         HP_BNB_NON_RD+=money
+	HP_BNB_NON_RD_GPV+=gpvalue
         next
     }
     #HP NT SERVER   office:all
     if (CNTRY == "CN" && BRAND == "HPB" && PM == "XL" && CS ~ /CC|DR|HD|NA|NC|SV|UP/) {
         HP_NT_SERVER+=money
+	HP_NT_SERVER_GPV+=gpvalue
         next
     }
     #HP GD RD	cs code:all
     if (CNTRY == "CN" && BRAND == "HPB" && PM ~ /EO|HW/ && OFIC ~ /GZ|SZ|NN|XM|FZ/) {
 	HP_GD_RD+=money
+	HP_GD_RD_GPV+=gpvalue
 	next
     }
     #HP SW RD	cs code:all
     if (CNTRY == "CN" && BRAND == "HPB" && PM ~ /EO|HW/ && OFIC ~ /CD|CQ|KM|GY/) {
         HP_SW_RD+=money
+	HP_SW_RD_GPV+=gpvalue
         next
     }
     #HPPM   office cs code:all
     if (CNTRY == "CN" && BRAND == "HPPM" && PM == "MW") {
         HPPM+=money
+	HPPM_GPV+=gpvalue
         next
     }
     #APC(CHINA)	office cs code:all
     if (CNTRY == "CN" && BRAND == "APC" && PM == "MW") {
         APC+=money
+	APC_GPV+=gpvalue
         next
     }
     #HP TD/TL	office:all
     if (CNTRY == "CN" && BRAND == "HPB" && PM == "DJ" && CS ~ /AI|SA|TD|TL/) {
         HP_TD_TL+=money
+	HP_TD_TL_GPV+=gpvalue
         next
     }
     #HP DISK ARRAY office:all
     if (CNTRY == "CN" && BRAND == "HPB" && PM == "DJ" && CS !~ /AI|OL|SA|TD|TL/) {
         HP_DISK_ARRAY+=money
+	HP_DISK_ARRAY_GPV+=gpvalue
         next
     }
     #HP MEDIA
     if (CNTRY == "CN" && BRAND == "HPB" && PM == "DJ" && CS == "OL") {
         HP_MEDIA+=money
+	HP_MEDIA_GPV+=gpvalue
         next
     }
     #QLOGIC(CHINA) office cs code:all
     if (CNTRY == "CN" && BRAND == "QLOGI" && PM == "DJ") {
         QLOGIC_CN+=money
+	QLOGIC_CN_GPV+=gpvalue
         next
     }
     #DLINK
     if (CNTRY == "CN" && BRAND == "DLINK" && PM == "GL") {
         DLINK+=money
+	DLINK_GPV+=gpvalue
         next
     }
     #Rui Jie Network
     if (CNTRY == "CN" && BRAND == "RUIJI" && PM == "GL") {
         RUIJI+=money
+	RUIJI_GPV+=gpvalue
         next
     }
     #Huawei
     if (CNTRY == "CN" && BRAND == "HUAW" && PM == "RW" && CS != "NC") {
         HUAW_RW+=money
+	HUAW_RW_GPV+=gpvalue
         next
     }
     #H3C
     if (CNTRY == "CN" && BRAND == "H3C" && PM == "RW") {
         H3C+=money
+	H3C_GPV+=gpvalue
         next
     }
     #ZTE Network
     if (CNTRY == "CN" && BRAND == "ZTE" && PM == "GZ") {
         ZTE_NET+=money
+	ZTE_NET_GPV+=gpvalue
         next
     }
     #Lenovo Server RD
     if (CNTRY == "CN" && BRAND == "LENOV" && PM == "GL") {
         LENOVO_SER_RD+=money
+	LENOVO_SER_RD_GPV+=gpvalue
         next
     }
     #EIZO(HK)
     if (CNTRY == "HK" && BRAND == "EIZO" && PM == "ML" && CS !~ /GC|MM/ && OFIC == "HK") {
         EIZO_HK+=money
+	EIZO_HK_GPV+=gpvalue
         next
     }
     #EIZO(CHINA)
     if (CNTRY == "CN" && BRAND == "EIZO" && PM == "ML" && CS !~ /GC|MM/) {
         EIZO_CN+=money
+	EIZO_CN_GPV+=gpvalue
         next
     }
     #APC (HK)
     if (CNTRY == "HK" && BRAND == "APC" && PM == "AP" && OFIC == "HK") {
         APC_HK+=money
+	APC_HK_GPV+=gpvalue
         next
     }
     #Qlogic(HK)
     if (CNTRY == "HK" && BRAND == "QLOGI" && PM == "AP" && OFIC == "HK") {
         QLOGIC_HK+=money
+	QLOGIC_HK_GPV+=gpvalue
         next
     }
     #MATROX(HK)
     if (CNTRY == "HK" && BRAND == "MGA" && PM == "ML" && OFIC == "HK") {
         MATROX_HK+=money
+	MATROX_HK_GPV+=gpvalue
         next
     }
     #MATROX(CHINA)
     if (CNTRY == "CN" && BRAND == "MGA" && PM == "ML") {
         MATROX_CN+=money
+	MATROX_CN_GPV+=gpvalue
         next
     }
     #HP Unix Server 
     if (CNTRY == "CN" && BRAND == "HPVAL" && PM == "HX" && CS ~ /RS|SV/) {
         HP_UNIX_SER+=money
+	HP_UNIX_SER_GPV+=gpvalue
         next
     }
     #HP Value Storage
     if (CNTRY == "CN" && BRAND == "HPVAL" && PM == "HX" && CS !~ /RS|SV/) {
         HP_VAL_STORG+=money
+	HP_VAL_STORG_GPV+=gpvalue
         next
     }
     #NetApp
     if (CNTRY == "CN" && BRAND == "NETAP" && PM == "HX") {
         NETAPP+=money
+	NETAPP_GPV+=gpvalue
         next
     }
     #Juniper
     if (CNTRY == "CN" && BRAND == "JUNIP" && PM == "DB") {
         JUNIPER+=money
+	JUNIPER_GPV+=gpvalue
         next
     }
     #HS
     if (CNTRY == "CN" && BRAND == "HS" && PM == "HZ") {
         HS+=money
+	HS_GPV+=gpvalue
         next
     }
     #HUAWEI
     if (CNTRY == "CN" && BRAND == "HUAW" && PM == "HZ" && CS == "NC") {
         HUAWEI_HZ+=money
+	HUAWEI_HZ_GPV+=gpvalue
         next
     }
     #Cisco
     if (CNTRY == "CN" && BRAND == "CISCO" && PM ~ /ES|LX/) {
         CISCO+=money
+	CISCO_GPV+=gpvalue
         next
     }
     #Extreme
     if (CNTRY == "CN" && BRAND == "EXTREME" && PM == "LX") {
         EXTREME+=money
+	EXTREME_GPV+=gpvalue
         next
     }
     #Siemens
     if (CNTRY == "CN" && BRAND == "SIEME" && PM == "NT") {
         SIEMENS+=money
+	SIEMENS_GPV+=gpvalue
         next
     }
     #IBM Server 
     if (CNTRY == "CN" && BRAND == "IBM" && PM == "HJ") {
         IBM_SER+=money
+	IBM_SER_GPV+=gpvalue
         next
     }
 }
@@ -473,49 +518,48 @@ NF == 15 {				    # works on stock data ...
 }
 
 END{
-    OFMT="%.0f"
-    print "LENOVO_PC"	 , LENOVO_PC	/10000,LENOVO_PC_STOCK/10000
-    print "LENOVO_NP"	 , LENOVO_NP    /10000,  LENOVO_NP_STOCK/10000
-    print "LENOVO_OTHER" , LENOVO_OTHER /10000,  LENOVO_OTHER_STOCK/10000
-    print "IBM_SER_HK"   , IBM_SER_HK   /10000,  IBM_SER_HK_STOCK/10000
-    print "IBM_STRG_HK"  , IBM_STRG_HK  /10000,  IBM_STRG_HK_STOCK/10000
-    print "IBM_SOFW"     , IBM_SOFW     /10000,  IBM_SOFW_STOCK/10000
-    print "NETGE"        , NETGE        /10000,  NETGE_STOCK/10000
-    print "SAMSU_CMCL"   , SAMSU_CMCL   /10000,  SAMSU_CMCL_STOCK/10000
-    print "HP_WOKSTAN"   , HP_WOKSTAN   /10000,  HP_WOKSTAN_STOCK/10000
-    print "HP_RPOS"      , HP_RPOS      /10000,  HP_RPOS_STOCK/10000
-    print "HPB_NB"       , HPB_NB       /10000,  HPB_NB_STOCK/10000
-    print "HP_BPC_NON_RD", HP_BPC_NON_RD/10000,  HP_BPC_NON_RD_STOCK/10000
-    print "HP_BNB_NON_RD", HP_BNB_NON_RD/10000,  HP_BNB_NON_RD_STOCK/10000
-    print "HP_NT_SERVER" , HP_NT_SERVER /10000,  HP_NT_SERVER_STOCK/10000
-    print "HP_GD_RD"     , HP_GD_RD     /10000,  HP_GD_RD_STOCK/10000
-    print "HP_SW_RD"     , HP_SW_RD     /10000,  HP_SW_RD_STOCK/10000
-    print "HPPM"         , HPPM         /10000,  HPPM_STOCK/10000
-    print "APC"          , APC          /10000,  APC_STOCK/10000
-    print "HP_TD_TL"     , HP_TD_TL     /10000,  HP_TD_TL_STOCK/10000
-    print "HP_DISK_ARRAY", HP_DISK_ARRAY/10000,  HP_DISK_ARRAY_STOCK/10000
-    print "HP_MEDIA"     , HP_MEDIA     /10000,  HP_MEDIA_STOCK/10000
-    print "QLOGIC_CN"    , QLOGIC_CN    /10000,  QLOGIC_CN_STOCK/10000
-    print "DLINK"        , DLINK        /10000,  DLINK_STOCK/10000
-    print "RUIJI"        , RUIJI        /10000,  RUIJI_STOCK/10000
-    print "HUAW_RW"      , HUAW_RW      /10000,  HUAW_RW_STOCK/10000
-    print "H3C"          , H3C          /10000,  H3C_STOCK/10000
-    print "ZTE_NET"      , ZTE_NET      /10000,  ZTE_NET_STOCK/10000
-    print "LENOVO_SER_RD", LENOVO_SER_RD/10000,  LENOVO_SER_RD_STOCK/10000
-    print "EIZO_HK"      , EIZO_HK      /10000,  EIZO_HK_STOCK/10000
-    print "EIZO_CN"      , EIZO_CN      /10000,  EIZO_CN_STOCK/10000
-    print "APC_HK"       , APC_HK       /10000,  APC_HK_STOCK/10000
-    print "QLOGIC_HK"    , QLOGIC_HK    /10000,  QLOGIC_HK_STOCK/10000
-    print "MATROX_HK"    , MATROX_HK    /10000,  MATROX_HK_STOCK/10000
-    print "MATROX_CN"    , MATROX_CN    /10000,  MATROX_CN_STOCK/10000
-    print "HP_UNIX_SER"  , HP_UNIX_SER  /10000,  HP_UNIX_SER_STOCK/10000
-    print "HP_VAL_STORG" , HP_VAL_STORG /10000,  HP_VAL_STORG_STOCK/10000
-    print "NETAPP"       , NETAPP       /10000,  NETAPP_STOCK/10000
-    print "JUNIPER"      , JUNIPER      /10000,  JUNIPER_STOCK/10000
-    print "HS"           , HS           /10000,  HS_STOCK/10000
-    print "HUAWEI_HZ"    , HUAWEI_HZ    /10000,  HUAWEI_HZ_STOCK/10000
-    print "CISCO"        , CISCO        /10000,  CISCO_STOCK/10000
-    print "EXTREME"      , EXTREME      /10000,  EXTREME_STOCK/10000
-    print "SIEMENS"      , SIEMENS      /10000,  SIEMENS_STOCK/10000
-    print "IBM_SER"      , IBM_SER      /10000,  IBM_SER_STOCK/10000
+    printf "LENOVO_PC,%.0f,%.0f,%.2f\n"	 , LENOVO_PC	/10000,LENOVO_PC_STOCK/10000          ,   LENOVO_PC_GPV
+    printf "LENOVO_NP,%.0f,%.0f,%.2f\n"	 , LENOVO_NP    /10000,  LENOVO_NP_STOCK/10000        ,   LENOVO_NP_GPV
+    printf "LENOVO_OTHER,%.0f,%.0f,%.2f\n" , LENOVO_OTHER /10000,  LENOVO_OTHER_STOCK/10000     ,   LENOVO_OTHER_GPV
+    printf "IBM_SER_HK,%.0f,%.0f,%.2f\n"   , IBM_SER_HK   /10000,  IBM_SER_HK_STOCK/10000       ,   IBM_SER_HK_GPV
+    printf "IBM_STRG_HK,%.0f,%.0f,%.2f\n"  , IBM_STRG_HK  /10000,  IBM_STRG_HK_STOCK/10000      ,   IBM_STRG_HK_GPV
+    printf "IBM_SOFW,%.0f,%.0f,%.2f\n"     , IBM_SOFW     /10000,  IBM_SOFW_STOCK/10000         ,   IBM_SOFW_GPV
+    printf "NETGE,%.0f,%.0f,%.2f\n"        , NETGE        /10000,  NETGE_STOCK/10000            ,   NETGE_GPV
+    printf "SAMSU_CMCL,%.0f,%.0f,%.2f\n"   , SAMSU_CMCL   /10000,  SAMSU_CMCL_STOCK/10000       ,   SAMSU_CMCL_GPV
+    printf "HP_WOKSTAN,%.0f,%.0f,%.2f\n"   , HP_WOKSTAN   /10000,  HP_WOKSTAN_STOCK/10000       ,   HP_WOKSTAN_GPV
+    printf "HP_RPOS,%.0f,%.0f,%.2f\n"      , HP_RPOS      /10000,  HP_RPOS_STOCK/10000          ,   HP_RPOS_GPV
+    printf "HPB_NB,%.0f,%.0f,%.2f\n"       , HPB_NB       /10000,  HPB_NB_STOCK/10000           ,   HPB_NB_GPV
+    printf "HP_BPC_NON_RD,%.0f,%.0f,%.2f\n", HP_BPC_NON_RD/10000,  HP_BPC_NON_RD_STOCK/10000    ,   HP_BPC_NON_RD_GPV
+    printf "HP_BNB_NON_RD,%.0f,%.0f,%.2f\n", HP_BNB_NON_RD/10000,  HP_BNB_NON_RD_STOCK/10000    ,   HP_BNB_NON_RD_GPV
+    printf "HP_NT_SERVER,%.0f,%.0f,%.2f\n" , HP_NT_SERVER /10000,  HP_NT_SERVER_STOCK/10000     ,   HP_NT_SERVER_GPV
+    printf "HP_GD_RD,%.0f,%.0f,%.2f\n"     , HP_GD_RD     /10000,  HP_GD_RD_STOCK/10000         ,   HP_GD_RD_GPV
+    printf "HP_SW_RD,%.0f,%.0f,%.2f\n"     , HP_SW_RD     /10000,  HP_SW_RD_STOCK/10000         ,   HP_SW_RD_GPV
+    printf "HPPM,%.0f,%.0f,%.2f\n"         , HPPM         /10000,  HPPM_STOCK/10000             ,   HPPM_GPV
+    printf "APC,%.0f,%.0f,%.2f\n"          , APC          /10000,  APC_STOCK/10000              ,   APC_GPV
+    printf "HP_TD_TL,%.0f,%.0f,%.2f\n"     , HP_TD_TL     /10000,  HP_TD_TL_STOCK/10000         ,   HP_TD_TL_GPV
+    printf "HP_DISK_ARRAY,%.0f,%.0f,%.2f\n", HP_DISK_ARRAY/10000,  HP_DISK_ARRAY_STOCK/10000    ,   HP_DISK_ARRAY_GPV
+    printf "HP_MEDIA,%.0f,%.0f,%.2f\n"     , HP_MEDIA     /10000,  HP_MEDIA_STOCK/10000         ,   HP_MEDIA_GPV
+    printf "QLOGIC_CN,%.0f,%.0f,%.2f\n"    , QLOGIC_CN    /10000,  QLOGIC_CN_STOCK/10000        ,   QLOGIC_CN_GPV
+    printf "DLINK,%.0f,%.0f,%.2f\n"        , DLINK        /10000,  DLINK_STOCK/10000            ,   DLINK_GPV
+    printf "RUIJI,%.0f,%.0f,%.2f\n"        , RUIJI        /10000,  RUIJI_STOCK/10000            ,   RUIJI_GPV
+    printf "HUAW_RW,%.0f,%.0f,%.2f\n"      , HUAW_RW      /10000,  HUAW_RW_STOCK/10000          ,   HUAW_RW_GPV
+    printf "H3C,%.0f,%.0f,%.2f\n"          , H3C          /10000,  H3C_STOCK/10000              ,   H3C_GPV
+    printf "ZTE_NET,%.0f,%.0f,%.2f\n"      , ZTE_NET      /10000,  ZTE_NET_STOCK/10000          ,   ZTE_NET_GPV
+    printf "LENOVO_SER_RD,%.0f,%.0f,%.2f\n", LENOVO_SER_RD/10000,  LENOVO_SER_RD_STOCK/10000    ,   LENOVO_SER_RD_GPV
+    printf "EIZO_HK,%.0f,%.0f,%.2f\n"      , EIZO_HK      /10000,  EIZO_HK_STOCK/10000          ,   EIZO_HK_GPV
+    printf "EIZO_CN,%.0f,%.0f,%.2f\n"      , EIZO_CN      /10000,  EIZO_CN_STOCK/10000          ,   EIZO_CN_GPV
+    printf "APC_HK,%.0f,%.0f,%.2f\n"       , APC_HK       /10000,  APC_HK_STOCK/10000           ,   APC_HK_GPV
+    printf "QLOGIC_HK,%.0f,%.0f,%.2f\n"    , QLOGIC_HK    /10000,  QLOGIC_HK_STOCK/10000        ,   QLOGIC_HK_GPV
+    printf "MATROX_HK,%.0f,%.0f,%.2f\n"    , MATROX_HK    /10000,  MATROX_HK_STOCK/10000        ,   MATROX_HK_GPV
+    printf "MATROX_CN,%.0f,%.0f,%.2f\n"    , MATROX_CN    /10000,  MATROX_CN_STOCK/10000        ,   MATROX_CN_GPV
+    printf "HP_UNIX_SER,%.0f,%.0f,%.2f\n"  , HP_UNIX_SER  /10000,  HP_UNIX_SER_STOCK/10000      ,   HP_UNIX_SER_GPV
+    printf "HP_VAL_STORG,%.0f,%.0f,%.2f\n" , HP_VAL_STORG /10000,  HP_VAL_STORG_STOCK/10000     ,   HP_VAL_STORG_GPV
+    printf "NETAPP,%.0f,%.0f,%.2f\n"       , NETAPP       /10000,  NETAPP_STOCK/10000           ,   NETAPP_GPV
+    printf "JUNIPER,%.0f,%.0f,%.2f\n"      , JUNIPER      /10000,  JUNIPER_STOCK/10000          ,   JUNIPER_GPV
+    printf "HS,%.0f,%.0f,%.2f\n"           , HS           /10000,  HS_STOCK/10000               ,   HS_GPV
+    printf "HUAWEI_HZ,%.0f,%.0f,%.2f\n"    , HUAWEI_HZ    /10000,  HUAWEI_HZ_STOCK/10000        ,   HUAWEI_HZ_GPV
+    printf "CISCO,%.0f,%.0f,%.2f\n"        , CISCO        /10000,  CISCO_STOCK/10000            ,   CISCO_GPV
+    printf "EXTREME,%.0f,%.0f,%.2f\n"      , EXTREME      /10000,  EXTREME_STOCK/10000          ,   EXTREME_GPV
+    printf "SIEMENS,%.0f,%.0f,%.2f\n"      , SIEMENS      /10000,  SIEMENS_STOCK/10000          ,   SIEMENS_GPV
+    printf "IBM_SER,%.0f,%.0f,%.2f\n"      , IBM_SER      /10000,  IBM_SER_STOCK/10000          ,   IBM_SER_GPV
 }
