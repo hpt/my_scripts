@@ -175,12 +175,12 @@ NF == 35 {		    # works on sales data ...
         next
     }
     #APC (HK)
-    if (CNTRY == "HK" && BRAND == "APC" && PM == "ML" && OFIC == "HK") {
+    if (CNTRY == "HK" && BRAND == "APC" && PM == "AP" && OFIC == "HK") {
         APC_HK+=money
         next
     }
     #Qlogic(HK)
-    if (CNTRY == "HK" && BRAND == "QLOGI" && PM == "ML" && OFIC == "HK") {
+    if (CNTRY == "HK" && BRAND == "QLOGI" && PM == "AP" && OFIC == "HK") {
         QLOGIC_HK+=money
         next
     }
