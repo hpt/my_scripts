@@ -229,6 +229,22 @@ canpath ()
     echo "${tmp:-.}"
 }
 
+# open a assh.exp screen
+assh_screen() 
+{
+    : ${1:?No machine specified}
+    
+    screen assh.exp -p rhts $1
+}
+
+# open a console screen
+console_screen()
+{
+    : ${1:?No machine specified}
+
+    screen console -M ${CONSOLE_SERVER:-console.lab.bos.redhat.com} -l phan $1
+}
+
 #export PROMPT_COMMAND='echo -ne "\0337\033[2;999r\033[1;1H\033[00;44m\033[K"`date "+%D %k:%M:%S"` CST"\033[00m\0338"'
 
 # for 'screen's dynamic window's title
