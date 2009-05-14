@@ -245,6 +245,15 @@ console_screen()
     screen console -M ${CONSOLE_SERVER:-console.lab.bos.redhat.com} -l phan $1
 }
 
+# loop through serveral dirs...
+# needs building the stack first with 'pushd dir'
+lcd() 
+{ 
+    local stack_height=$(dirs -p|wc -l)
+    [[ $stack_height -eq 1 ]] && echo "No alternative dir for looping..." && return 0
+    pushd +$((stack_height-1)) 
+}
+
 #export PROMPT_COMMAND='echo -ne "\0337\033[2;999r\033[1;1H\033[00;44m\033[K"`date "+%D %k:%M:%S"` CST"\033[00m\0338"'
 
 # for 'screen's dynamic window's title
