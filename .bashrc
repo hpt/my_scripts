@@ -254,6 +254,18 @@ lcd()
     pushd +$((stack_height-1)) 
 }
 
+# find out the newest file
+# come from irc.freenode.net #bash
+latest ()
+{
+    local file files=("${1:-.}/"*) latest=$files;
+    for file in "${files[@]}";
+    do
+        [[ $file -nt $latest ]] && latest=$file;
+    done;
+    echo "$latest"
+}
+
 #export PROMPT_COMMAND='echo -ne "\0337\033[2;999r\033[1;1H\033[00;44m\033[K"`date "+%D %k:%M:%S"` CST"\033[00m\0338"'
 
 # for 'screen's dynamic window's title
