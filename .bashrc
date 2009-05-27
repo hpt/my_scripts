@@ -233,8 +233,9 @@ canpath ()
 assh_screen() 
 {
     : ${1:?No machine specified}
+    : ${PW_AS:-rhts}
     
-    screen assh.exp -p rhts $1
+    screen assh.exp -p ${PW_AS} $1
 }
 
 # open a console screen
