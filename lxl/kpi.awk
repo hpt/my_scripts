@@ -20,7 +20,7 @@ FNR==1{next}
     gsub(/[[:blank:]]+/,"")
     rebuild_line()
 }
-NF == 35 {		    # works on sales data ...
+NF == 36 {		    # works on sales data ...
     #COUNTRY/COMPANY 18|BRAND/IMBRCODE 14|   PM 17  |   CS CODE 28  | OFFICE 19	| GPVALE 23 |
     CNTRY=$18;		BRAND=$14;	    PM=$17;	CS=$28;	    OFIC=$19
     money=$25
