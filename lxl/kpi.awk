@@ -446,12 +446,12 @@ NF == 15 {				    # works on stock data ...
         next
     }
     #APC (HK)
-    if ( BRAND == "APC" && PM == "ML" && OFIC == "HK") {
+    if ( BRAND == "APC" && PM == "AP" && OFIC == "HK") {
         APC_HK_STOCK+=money
         next
     }
     #Qlogic(HK)
-    if ( BRAND == "QLOGI" && PM == "ML" && OFIC == "HK") {
+    if ( BRAND == "QLOGI" && PM == "AP" && OFIC == "HK") {
         QLOGIC_HK_STOCK+=money
         next
     }
