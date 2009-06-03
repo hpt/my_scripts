@@ -44,19 +44,19 @@ NF == 36 {		    # works on sales data ...
         next
     }
     #IBM SERVER(HK)
-    if (CNTRY == "HK" && BRAND == "IBM" && PM == "MX" && CS != "NS" && OFIC == "HK" ) {
+    if (CNTRY == "HK" && BRAND == "IBM" && PM == "RY" && CS != "NS" && OFIC == "HK" ) {
 	IBM_SER_HK+=money
 	IBM_SER_HK_GPV+=gpvalue
 	next
     }
     #IBM STORAGE(HK)
-    if (CNTRY == "HK" && BRAND == "IBM" && PM == "MX" && CS == "NS" && OFIC == "HK" ) {
+    if (CNTRY == "HK" && BRAND == "IBM" && PM == "RY" && CS == "NS" && OFIC == "HK" ) {
         IBM_STRG_HK+=money
 	IBM_STRG_HK_GPV+=gpvalue
         next
     }
     #IBM SOFTWARE   CS CODE: ALL
-    if (CNTRY == "HK" && BRAND == "LOTUS" && PM == "MX" && OFIC == "HK" ) {
+    if (CNTRY == "HK" && BRAND == "LOTUS" && PM == "RY" && OFIC == "HK" ) {
         IBM_SOFW+=money
 	IBM_SOFW_GPV+=gpvalue
         next
@@ -311,17 +311,17 @@ NF == 15 {				    # works on stock data ...
         next
     }
     #IBM SERVER(HK)
-    if ( BRAND == "IBM" && PM == "MX" && CS != "NS" && OFIC == "HK" ) {
+    if ( BRAND == "IBM" && PM == "RY" && CS != "NS" && OFIC == "HK" ) {
 	IBM_SER_HK_STOCK+=money
 	next
     }
     #IBM STORAGE(HK)
-    if ( BRAND == "IBM" && PM == "MX" && CS == "NS" && OFIC == "HK" ) {
+    if ( BRAND == "IBM" && PM == "RY" && CS == "NS" && OFIC == "HK" ) {
         IBM_STRG_HK_STOCK+=money
         next
     }
     #IBM SOFTWARE   CS CODE: ALL
-    if ( BRAND == "LOTUS" && PM == "MX" && OFIC == "HK" ) {
+    if ( BRAND == "LOTUS" && PM == "RY" && OFIC == "HK" ) {
         IBM_SOFW_STOCK+=money
         next
     }
