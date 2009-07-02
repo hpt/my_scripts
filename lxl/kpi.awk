@@ -92,7 +92,7 @@ NF == 36 {		    # works on sales data ...
         next
     }
     #HP BPC NON-RD
-    if (CNTRY == "CN" && BRAND == "HPB" && PM == "EO" && CS !~ /CC|DR|HD|NA|NC|SV|UP/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
+    if (CNTRY == "CN" && BRAND == "HPB" && PM == "EO" && CS !~ /NB/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
         HP_BPC_NON_RD+=money
 	HP_BPC_NON_RD_GPV+=gpvalue
         next
@@ -134,13 +134,13 @@ NF == 36 {		    # works on sales data ...
         next
     }
     #HP TD/TL	office:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM == "DJ" && CS ~ /AI|SA|TD|TL/) {
+    if (CNTRY == "CN" && BRAND == "HPB" && PM == "DJ" && CS ~ /SA|TD|TL/) {
         HP_TD_TL+=money
 	HP_TD_TL_GPV+=gpvalue
         next
     }
     #HP DISK ARRAY office:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM == "DJ" && CS !~ /AI|OL|SA|TD|TL/) {
+    if (CNTRY == "CN" && BRAND == "HPB" && PM == "DJ" && CS !~ /OL|SA|TD|TL/) {
         HP_DISK_ARRAY+=money
 	HP_DISK_ARRAY_GPV+=gpvalue
         next
@@ -218,13 +218,13 @@ NF == 36 {		    # works on sales data ...
         next
     }
     #MATROX(HK)
-    if (CNTRY == "HK" && BRAND == "MGA" && PM == "ML" && OFIC == "HK") {
+    if (CNTRY == "HK" && BRAND == "MGA" && PM == "SL" && OFIC == "HK") {
         MATROX_HK+=money
 	MATROX_HK_GPV+=gpvalue
         next
     }
     #MATROX(CHINA)
-    if (CNTRY == "CN" && BRAND == "MGA" && PM == "ML") {
+    if (CNTRY == "CN" && BRAND == "MGA" && PM == "SL") {
         MATROX_CN+=money
 	MATROX_CN_GPV+=gpvalue
         next
@@ -351,7 +351,7 @@ NF == 15 {				    # works on stock data ...
         next
     }
     #HP BPC NON-RD
-    if ( BRAND == "HPB" && PM == "EO" && CS !~ /CC|DR|HD|NA|NC|SV|UP/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
+    if ( BRAND == "HPB" && PM == "EO" && CS !~ /NB/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
         HP_BPC_NON_RD_STOCK+=money
         next
     }
@@ -386,12 +386,12 @@ NF == 15 {				    # works on stock data ...
         next
     }
     #HP TD/TL	office:all
-    if ( BRAND == "HPB" && PM == "DJ" && CS ~ /AI|SA|TD|TL/) {
+    if ( BRAND == "HPB" && PM == "DJ" && CS ~ /SA|TD|TL/) {
         HP_TD_TL_STOCK+=money
         next
     }
     #HP DISK ARRAY office:all
-    if ( BRAND == "HPB" && PM == "DJ" && CS !~ /AI|OL|SA|TD|TL/) {
+    if ( BRAND == "HPB" && PM == "DJ" && CS !~ /OL|SA|TD|TL/) {
         HP_DISK_ARRAY_STOCK+=money
         next
     }
@@ -456,12 +456,12 @@ NF == 15 {				    # works on stock data ...
         next
     }
     #MATROX(HK)
-    if ( BRAND == "MGA" && PM == "ML" && OFIC == "HK") {
+    if ( BRAND == "MGA" && PM == "SL" && OFIC == "HK") {
         MATROX_HK_STOCK+=money
         next
     }
     #MATROX(CHINA)
-    if ( BRAND == "MGA" && PM == "ML") {
+    if ( BRAND == "MGA" && PM == "SL") {
         MATROX_CN_STOCK+=money
         next
     }
