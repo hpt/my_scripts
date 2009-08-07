@@ -121,6 +121,42 @@ NF == 36 {		    # works on sales data ...
 	HP_SW_RD_GPV+=gpvalue
         next
     }
+    #HP shandong RD cs code:all
+    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /JN|TI|YT|QD/) {
+	HP_SD_RD+=money
+	HP_SD_RD_GPV+=gpvalue
+	next
+    }
+    #HP HeNan ShanXi RD cs code:all
+    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /ZZ|TY|LY/) {
+	HP_HN_SX_RD+=money
+	HP_HN_SX_RD_GPV+=gpvalue
+	next
+    }
+    #HP ShangHai RD cs code:all
+    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /SH/) {
+	HP_SH_RD+=money
+	HP_SH_RD_GPV+=gpvalue
+	next
+    }
+    #HP ZheJiang RD cs code:all
+    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /HZ|NB/) {
+	HP_ZJ_RD+=money
+	HP_ZJ_RD_GPV+=gpvalue
+	next
+    }
+    #HP JiangSu RD cs code:all
+    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /NJ|SU/) {
+	HP_JS_RD+=money
+	HP_JS_RD_GPV+=gpvalue
+	next
+    }
+    #HP AnHui RD cs code:all
+    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /HF/) {
+	HP_AH_RD+=money
+	HP_AH_RD_GPV+=gpvalue
+	next
+    }
     #HPPM   office cs code:all
     if (CNTRY == "CN" && BRAND == "HPPM" && PM == "MW") {
         HPPM+=money
@@ -283,11 +319,17 @@ NF == 36 {		    # works on sales data ...
 	SIEMENS_GPV+=gpvalue
         next
     }
-    #IBM Server 
-    if (CNTRY == "CN" && BRAND == "IBM" && PM == "HJ") {
-        IBM_SER+=money
-	IBM_SER_GPV+=gpvalue
+    #IBM Server RD office:all
+    if (CNTRY == "CN" && BRAND == "IBM" && PM == "HJ" && CS == "RS") {
+        IBM_RD_SER+=money
+	IBM_RD_SER_GPV+=gpvalue
         next
+    }
+    #IBM Server traditional office:all
+    if (CNTRY == "CN" && BRAND == "IBM" && PM == "HJ" && CS != "RS") {
+	IBM_TD_SER+=money
+	IBM_TD_SER_GPV+=gpvalue
+	next
     }
 }
 
@@ -374,6 +416,36 @@ NF == 15 {				    # works on stock data ...
     if ( BRAND == "HPB" && PM ~ /EO|HW/ && OFIC ~ /CD|CQ|KM|GY/) {
         HP_SW_RD_STOCK+=money
         next
+    }
+    #HP shandong RD cs code:all
+    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /JN|TI|YT|QD/) {
+	HP_SD_RD_STOCK+=money
+	next
+    }
+    #HP HeNan ShanXi RD cs code:all
+    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /ZZ|TY|LY/) {
+	HP_HN_SX_RD_STOCK+=money
+	next
+    }
+    #HP ShangHai RD cs code:all
+    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /SH/) {
+	HP_SH_RD_STOCK+=money
+	next
+    }
+    #HP ZheJiang RD cs code:all
+    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /HZ|NB/) {
+	HP_ZJ_RD_STOCK+=money
+	next
+    }
+    #HP JiangSu RD cs code:all
+    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /NJ|SU/) {
+	HP_JS_RD_STOCK+=money
+	next
+    }
+    #HP AnHui RD cs code:all
+    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /HF/) {
+	HP_AH_RD_STOCK+=money
+	next
     }
     #HPPM   office cs code:all
     if ( BRAND == "HPPM" && PM == "MW") {
@@ -510,10 +582,15 @@ NF == 15 {				    # works on stock data ...
         SIEMENS_STOCK+=money
         next
     }
-    #IBM Server 
-    if ( BRAND == "IBM" && PM == "HJ") {
-        IBM_SER_STOCK+=money
+    #IBM Server RD office:all
+    if (CNTRY == "CN" && BRAND == "IBM" && PM == "HJ" && CS == "RS") {
+        IBM_RD_SER_STOCK+=money
         next
+    }
+    #IBM Server traditional office:all
+    if (CNTRY == "CN" && BRAND == "IBM" && PM == "HJ" && CS != "RS") {
+	IBM_TD_SER_STOCK+=money
+	next
     }
 }
 
@@ -534,6 +611,12 @@ END{
     printf "HP_NT_SERVER,%.0f,%.0f,%.2f\n" , HP_NT_SERVER /10000,  HP_NT_SERVER_STOCK/10000     ,   HP_NT_SERVER_GPV
     printf "HP_GD_RD,%.0f,%.0f,%.2f\n"     , HP_GD_RD     /10000,  HP_GD_RD_STOCK/10000         ,   HP_GD_RD_GPV
     printf "HP_SW_RD,%.0f,%.0f,%.2f\n"     , HP_SW_RD     /10000,  HP_SW_RD_STOCK/10000         ,   HP_SW_RD_GPV
+    printf "HP_SD_RD,%.0f,%.0f,%.2f\n"     , HP_SD_RD     /10000,  HP_SD_RD_STOCK/10000         ,   HP_SD_RD_GPV
+    printf "HP_HN_SX_RD,%.0f,%.0f,%.2f\n"  , HP_HN_SX_RD  /10000,  HP_HN_SX_RD_STOCK/10000      ,   HP_HN_SX_RD_GPV
+    printf "HP_SH_RD,%.0f,%.0f,%.2f\n"     , HP_SH_RD     /10000,  HP_SH_RD_STOCK/10000         ,   HP_SH_RD_GPV
+    printf "HP_ZJ_RD,%.0f,%.0f,%.2f\n"     , HP_ZJ_RD     /10000,  HP_ZJ_RD_STOCK/10000         ,   HP_ZJ_RD_GPV
+    printf "HP_JS_RD,%.0f,%.0f,%.2f\n"     , HP_JS_RD     /10000,  HP_JS_RD_STOCK/10000         ,   HP_JS_RD_GPV
+    printf "HP_AH_RD,%.0f,%.0f,%.2f\n"     , HP_AH_RD     /10000,  HP_AH_RD_STOCK/10000         ,   HP_AH_RD_GPV
     printf "HPPM,%.0f,%.0f,%.2f\n"         , HPPM         /10000,  HPPM_STOCK/10000             ,   HPPM_GPV
     printf "APC,%.0f,%.0f,%.2f\n"          , APC          /10000,  APC_STOCK/10000              ,   APC_GPV
     printf "HP_TD_TL,%.0f,%.0f,%.2f\n"     , HP_TD_TL     /10000,  HP_TD_TL_STOCK/10000         ,   HP_TD_TL_GPV
@@ -561,5 +644,6 @@ END{
     printf "CISCO,%.0f,%.0f,%.2f\n"        , CISCO        /10000,  CISCO_STOCK/10000            ,   CISCO_GPV
     printf "EXTREME,%.0f,%.0f,%.2f\n"      , EXTREME      /10000,  EXTREME_STOCK/10000          ,   EXTREME_GPV
     printf "SIEMENS,%.0f,%.0f,%.2f\n"      , SIEMENS      /10000,  SIEMENS_STOCK/10000          ,   SIEMENS_GPV
-    printf "IBM_SER,%.0f,%.0f,%.2f\n"      , IBM_SER      /10000,  IBM_SER_STOCK/10000          ,   IBM_SER_GPV
+    printf "IBM_RD_SER,%.0f,%.0f,%.2f\n"   , IBM_RD_SER   /10000,  IBM_RD_SER_STOCK/10000       ,   IBM_RD_SER_GPV
+    printf "IBM_TD_SER,%.0f,%.0f,%.2f\n"   , IBM_TD_SER   /10000,  IBM_TD_SER_STOCK/10000       ,   IBM_TD_SER_GPV
 }
