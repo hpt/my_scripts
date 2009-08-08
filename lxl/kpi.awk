@@ -91,70 +91,64 @@ NF == 36 {		    # works on sales data ...
 	HPB_NB_GPV+=gpvalue
         next
     }
-    #HP BPC NON-RD
-    if (CNTRY == "CN" && BRAND == "HPB" && PM == "EO" && CS !~ /NB/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
-        HP_BPC_NON_RD+=money
-	HP_BPC_NON_RD_GPV+=gpvalue
-        next
-    }
-    #HP BNB Non-RD
-    if (CNTRY == "CN" && BRAND == "HPB" && PM == "HW" && CS ~ /NB/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
-        HP_BNB_NON_RD+=money
-	HP_BNB_NON_RD_GPV+=gpvalue
-        next
-    }
-    #HP NT SERVER   office:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM == "XL" && CS ~ /CC|DR|HD|NA|NC|SV|UP/) {
-        HP_NT_SERVER+=money
-	HP_NT_SERVER_GPV+=gpvalue
-        next
-    }
-    #HP GD RD	cs code:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM ~ /EO|HW/ && OFIC ~ /GZ|SZ|NN|XM|FZ/) {
-	HP_GD_RD+=money
-	HP_GD_RD_GPV+=gpvalue
-	next
-    }
-    #HP SW RD	cs code:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM ~ /EO|HW/ && OFIC ~ /CD|CQ|KM|GY/) {
-        HP_SW_RD+=money
-	HP_SW_RD_GPV+=gpvalue
-        next
-    }
-    #HP shandong RD cs code:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /JN|TI|YT|QD/) {
-	HP_SD_RD+=money
-	HP_SD_RD_GPV+=gpvalue
-	next
-    }
-    #HP HeNan ShanXi RD cs code:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /ZZ|TY|LY/) {
-	HP_HN_SX_RD+=money
-	HP_HN_SX_RD_GPV+=gpvalue
-	next
-    }
-    #HP ShangHai RD cs code:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /SH/) {
-	HP_SH_RD+=money
-	HP_SH_RD_GPV+=gpvalue
-	next
-    }
-    #HP ZheJiang RD cs code:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /HZ|NB/) {
-	HP_ZJ_RD+=money
-	HP_ZJ_RD_GPV+=gpvalue
-	next
-    }
-    #HP JiangSu RD cs code:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /NJ|SU/) {
-	HP_JS_RD+=money
-	HP_JS_RD_GPV+=gpvalue
-	next
-    }
-    #HP AnHui RD cs code:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /HF/) {
-	HP_AH_RD+=money
-	HP_AH_RD_GPV+=gpvalue
+
+    #HP HPB specially
+    if (CNTRY == "CN" && BRAND == "HPB") {
+	#HP BPC NON-RD
+    	    if (PM == "EO" && CS !~ /NB/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
+    	    HP_BPC_NON_RD+=money
+    	    HP_BPC_NON_RD_GPV+=gpvalue
+    	    }
+    	#HP BNB Non-RD
+    	if (PM == "HW" && CS ~ /NB/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
+    	    HP_BNB_NON_RD+=money
+    	    HP_BNB_NON_RD_GPV+=gpvalue
+    	}
+    	#HP NT SERVER   office:all
+    	if (PM == "XL" && CS ~ /CC|DR|HD|NA|NC|SV|UP/) {
+    	    HP_NT_SERVER+=money
+    	    HP_NT_SERVER_GPV+=gpvalue
+    	}
+    	#HP GD RD	cs code:all
+    	if (PM ~ /EO|HW/ && OFIC ~ /GZ|SZ|NN|XM|FZ/) {
+    	    HP_GD_RD+=money
+    	    HP_GD_RD_GPV+=gpvalue
+    	}
+    	#HP SW RD	cs code:all
+    	if (PM ~ /EO|HW/ && OFIC ~ /CD|CQ|KM|GY/) {
+    	    HP_SW_RD+=money
+    	    HP_SW_RD_GPV+=gpvalue
+    	}
+    	#HP shandong RD cs code:all
+    	if (PM ~ /EO|HW/ && OFIC ~ /JN|TI|YT|QD/) {
+    	    HP_SD_RD+=money
+    	    HP_SD_RD_GPV+=gpvalue
+    	}
+    	#HP HeNan ShanXi RD cs code:all
+    	if (PM ~ /EO|HW/ && OFIC ~ /ZZ|TY|LY/) {
+    	    HP_HN_SX_RD+=money
+    	    HP_HN_SX_RD_GPV+=gpvalue
+    	}
+    	#HP ShangHai RD cs code:all
+    	if (PM ~ /EO|HW/ && OFIC ~ /SH/) {
+    	    HP_SH_RD+=money
+    	    HP_SH_RD_GPV+=gpvalue
+    	}
+    	#HP ZheJiang RD cs code:all
+    	if (PM ~ /EO|HW/ && OFIC ~ /HZ|NB/) {
+    	    HP_ZJ_RD+=money
+    	    HP_ZJ_RD_GPV+=gpvalue
+    	}
+    	#HP JiangSu RD cs code:all
+    	if (PM ~ /EO|HW/ && OFIC ~ /NJ|SU/) {
+    	    HP_JS_RD+=money
+    	    HP_JS_RD_GPV+=gpvalue
+    	}
+    	#HP AnHui RD cs code:all
+    	if (PM ~ /EO|HW/ && OFIC ~ /HF/) {
+    	    HP_AH_RD+=money
+    	    HP_AH_RD_GPV+=gpvalue
+    	}
 	next
     }
     #HPPM   office cs code:all
@@ -392,59 +386,53 @@ NF == 15 {				    # works on stock data ...
         HPB_NB_STOCK+=money
         next
     }
+
+    #HP HPB specially
     #HP BPC NON-RD
-    if ( BRAND == "HPB" && PM == "EO" && CS !~ /NB/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
-        HP_BPC_NON_RD_STOCK+=money
-        next
-    }
-    #HP BNB Non-RD
-    if ( BRAND == "HPB" && PM == "HW" && CS ~ /NB/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
-        HP_BNB_NON_RD_STOCK+=money
-        next
-    }
-    #HP NT SERVER   office:all
-    if ( BRAND == "HPB" && PM == "XL" && CS ~ /CC|DR|HD|NA|NC|SV|UP/) {
-        HP_NT_SERVER_STOCK+=money
-        next
-    }
-    #HP GD RD	cs code:all
-    if ( BRAND == "HPB" && PM ~ /EO|HW/ && OFIC ~ /GZ|SZ|NN|XM|FZ/) {
-	HP_GD_RD_STOCK+=money
-	next
-    }
-    #HP SW RD	cs code:all
-    if ( BRAND == "HPB" && PM ~ /EO|HW/ && OFIC ~ /CD|CQ|KM|GY/) {
-        HP_SW_RD_STOCK+=money
-        next
-    }
-    #HP shandong RD cs code:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /JN|TI|YT|QD/) {
-	HP_SD_RD_STOCK+=money
-	next
-    }
-    #HP HeNan ShanXi RD cs code:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /ZZ|TY|LY/) {
-	HP_HN_SX_RD_STOCK+=money
-	next
-    }
-    #HP ShangHai RD cs code:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /SH/) {
-	HP_SH_RD_STOCK+=money
-	next
-    }
-    #HP ZheJiang RD cs code:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /HZ|NB/) {
-	HP_ZJ_RD_STOCK+=money
-	next
-    }
-    #HP JiangSu RD cs code:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /NJ|SU/) {
-	HP_JS_RD_STOCK+=money
-	next
-    }
-    #HP AnHui RD cs code:all
-    if (CNTRY == "CN" && BRAND == "HPB" && PM ~/EO|HW/ && OFIC ~ /HF/) {
-	HP_AH_RD_STOCK+=money
+    if ( BRAND == "HPB") {
+	if (PM == "EO" && CS !~ /NB/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
+	    HP_BPC_NON_RD_STOCK+=money
+	}
+	#HP BNB Non-RD
+    	if (PM == "HW" && CS ~ /NB/ && OFIC !~ /CD|CQ|GZ|GY|KM|SZ|NN|FZ|XM/ ) {
+    	    HP_BNB_NON_RD_STOCK+=money
+    	}
+    	#HP NT SERVER   office:all
+    	if ( PM == "XL" && CS ~ /CC|DR|HD|NA|NC|SV|UP/) {
+    	    HP_NT_SERVER_STOCK+=money
+    	}
+    	#HP GD RD	cs code:all
+    	if (PM ~ /EO|HW/ && OFIC ~ /GZ|SZ|NN|XM|FZ/) {
+    	    HP_GD_RD_STOCK+=money
+    	}
+    	#HP SW RD	cs code:all
+    	if (PM ~ /EO|HW/ && OFIC ~ /CD|CQ|KM|GY/) {
+    	    HP_SW_RD_STOCK+=money
+    	}
+    	#HP shandong RD cs code:all
+    	if (PM ~/EO|HW/ && OFIC ~ /JN|TI|YT|QD/) {
+    	    HP_SD_RD_STOCK+=money
+    	}
+    	#HP HeNan ShanXi RD cs code:all
+    	if (PM ~/EO|HW/ && OFIC ~ /ZZ|TY|LY/) {
+    	    HP_HN_SX_RD_STOCK+=money
+    	}
+    	#HP ShangHai RD cs code:all
+    	if (PM ~/EO|HW/ && OFIC ~ /SH/) {
+    	    HP_SH_RD_STOCK+=money
+    	}
+    	#HP ZheJiang RD cs code:all
+    	if (PM ~/EO|HW/ && OFIC ~ /HZ|NB/) {
+    	    HP_ZJ_RD_STOCK+=money
+    	}
+    	#HP JiangSu RD cs code:all
+    	if (PM ~/EO|HW/ && OFIC ~ /NJ|SU/) {
+    	    HP_JS_RD_STOCK+=money
+    	}
+    	#HP AnHui RD cs code:all
+    	if (PM ~/EO|HW/ && OFIC ~ /HF/) {
+    	    HP_AH_RD_STOCK+=money
+    	}
 	next
     }
     #HPPM   office cs code:all
