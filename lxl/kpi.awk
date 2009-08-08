@@ -18,6 +18,7 @@ FNR==1{next}
 
 {
     gsub(/[[:blank:]]+/,"")
+    gsub(/[[:cntrl:]]+/,"")
     rebuild_line()
 }
 NF == 36 {		    # works on sales data ...
