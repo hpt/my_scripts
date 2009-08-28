@@ -249,9 +249,24 @@ console_screen()
 # needs building the stack first with 'pushd dir'
 lcd() 
 { 
-    local stack_height=$(dirs -p|wc -l)
-    [[ $stack_height -eq 1 ]] && echo "No alternative dir for looping..." && return 0
-    pushd +$((stack_height-1)) 
+    if [ $# = 0 ]
+    then
+	local stack_height=$(dirs -p|wc -l)
+    	[[ $stack_height -eq 1 ]] && echo "No alternative dir for looping..." && return 0
+    	pushd +$((stack_height-1)) 
+    elif [ $# = 1 ]
+    then
+	local target_dir_pos=$(dirs -v |grep -E "$1" |awk '{a[$2]=$1};END{for(i in a)print a[i]}')
+	[ -z "$target_dir_pos" ] && echo "Cannot find the target: $1" && return 0
+
+	local target_dir_num=$(echo "$target_dir_pos"|wc -l)
+
+	if [  "$target_dir_num" -gt 1 ]
+	then
+	    echo -e "Ambigous target:\n" "$(dirs -v |grep -E "$1")" && return 0
+	fi
+	pushd +$target_dir_pos
+    fi
 }
 
 # find out the newest file
