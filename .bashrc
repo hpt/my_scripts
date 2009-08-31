@@ -256,7 +256,7 @@ lcd()
     	pushd +$((stack_height-1)) 
     elif [ $# = 1 ]
     then
-	local target_dir_pos=$(dirs -v |grep -E "$1" |awk '{a[$2]=$1};END{for(i in a)print a[i]}')
+	local target_dir_pos=$(dirs -v -l|grep -E "$1" |awk '{a[$2]=$1};END{for(i in a)print a[i]}')
 	[ -z "$target_dir_pos" ] && echo "Cannot find the target: $1" && return 0
 
 	local target_dir_num=$(echo "$target_dir_pos"|wc -l)
