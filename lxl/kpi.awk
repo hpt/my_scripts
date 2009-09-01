@@ -10,6 +10,7 @@ function rebuild_line(	n,f,i,inFld)
     $0 = ""
     for (i=1;i<=n;i++) {
 	inFld = (f[i] == "\"" ? !inFld : inFld)
+	if (f[i] == "\"") i++
 	$0 = $0 (!inFld && (f[i] == ",") ? FS : f[i])
     }
 }
