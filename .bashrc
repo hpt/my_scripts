@@ -234,7 +234,7 @@ assh_screen()
 {
     : ${1:?No machine specified}
     
-    screen assh.exp -p "${PW_AS-rhts}" $1
+    screen assh.exp -t "${TO_AS:-30}" -p "${PW_AS-rhts}" $1
 }
 
 # open a console screen
