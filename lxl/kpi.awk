@@ -9,6 +9,14 @@ function rebuild_line(	n,f,i,inFld)
     n = split($0,f,"")
     $0 = ""
     for (i=1;i<=n;i++) {
+	# try to support qianrued "( such as ..,"there is a """,)
+	if (f[i] == "\"" && f[i+1] == "\"")
+	{
+	    $0 = $0 f[i]
+	    i++
+	    continue
+	}
+	
 	inFld = (f[i] == "\"" ? !inFld : inFld)
 	if (f[i] == "\"") i++
 	$0 = $0 (!inFld && (f[i] == ",") ? FS : f[i])
