@@ -34,19 +34,19 @@ NF == 36 {		    # works on sales data ...
         next
     }
     #LENOVO NB
-    if (CNTRY == "HK" && BRAND == "LENOV" && PM == "CA" && CS == "NB" && OFIC == "HK" ) {
+    if (CNTRY == "HK" && BRAND == "LENOV" && PM == "CH" && CS == "NB" && OFIC == "HK" ) {
         LENOVO_NP+=money
 	LENOVO_NP_GPV+=gpvalue
         next
     }
     #LENOVO OTHER
-    if (CNTRY == "HK" && BRAND == "LENOV" && PM == "CA" && CS !~ /LD|NB|PC/ && OFIC == "HK" ) {
+    if (CNTRY == "HK" && BRAND == "LENOV" && PM == "CA" && CS !~ /LD|PC/ && OFIC == "HK" ) {
         LENOVO_OTHER+=money
 	LENOVO_OTHER_GPV+=gpvalue
         next
     }
     #IBM SERVER(HK)
-    if (CNTRY == "HK" && BRAND == "IBM" && PM == "RY" && CS != "NS" && OFIC == "HK" ) {
+    if (CNTRY == "HK" && BRAND == "IBM" && PM == "RY" && CS != "NS" ) {
 	IBM_SER_HK+=money
 	IBM_SER_HK_GPV+=gpvalue
 	next
@@ -76,19 +76,19 @@ NF == 36 {		    # works on sales data ...
         next
     }
     #HP WORKSTATION 
-    if (CNTRY == "HK" && BRAND == "HPB" && PM == "MB" && CS ~ /PB/ && OFIC == "HK" ) {
+    if (CNTRY == "HK" && BRAND == "HPB" && PM == "MB" && CS ~ /PB|LD|AI/ && OFIC == "HK" ) {
         HP_WOKSTAN+=money
 	HP_WOKSTAN_GPV+=gpvalue
         next
     }
     #HP RPOS
-    if (CNTRY == "HK" && BRAND == "HPB" && PM == "MB" && CS ~ /HO/ && OFIC == "HK" ) {
+    if (CNTRY == "HK" && BRAND == "HPB" && PM == "MB" && CS ~ /CE/ && OFIC == "HK" ) {
         HP_RPOS+=money
 	HP_RPOS_GPV+=gpvalue
         next
     }
     #HPB NB
-    if (CNTRY == "HK" && BRAND == "HP" && PM == "FS" && CS ~ /NB/ && OFIC == "HK" ) {
+    if (CNTRY == "HK" && BRAND == "HP" && PM == "FS" && CS ~ /NB|UM|AI/ && OFIC == "HK" ) {
         HPB_NB+=money
 	HPB_NB_GPV+=gpvalue
         next
@@ -154,13 +154,13 @@ NF == 36 {		    # works on sales data ...
 	next
     }
     #HPPM   office cs code:all
-    if (CNTRY == "CN" && BRAND == "HPPM" && PM == "MW") {
+    if (CNTRY == "CN" && BRAND == "HPPM" && PM == "DJ") {
         HPPM+=money
 	HPPM_GPV+=gpvalue
         next
     }
     #APC(CHINA)	office cs code:all
-    if (CNTRY == "CN" && BRAND == "APC" && PM == "MW") {
+    if (CNTRY == "CN" && BRAND == "APC" && PM == "DJ") {
         APC+=money
 	APC_GPV+=gpvalue
         next
@@ -196,7 +196,7 @@ NF == 36 {		    # works on sales data ...
         next
     }
     #Rui Jie Network
-    if (CNTRY == "CN" && BRAND == "RUIJI" && PM == "GL") {
+    if (CNTRY == "CN" && BRAND == "RUIJI" && PM == "DL") {
         RUIJI+=money
 	RUIJI_GPV+=gpvalue
         next
@@ -226,13 +226,13 @@ NF == 36 {		    # works on sales data ...
         next
     }
     #EIZO(HK)
-    if (CNTRY == "HK" && BRAND == "EIZO" && PM == "ML" && CS !~ /GC|MM/ && OFIC == "HK") {
+    if (CNTRY == "HK" && BRAND ~ /EIZO|EIOEM/ && PM ~ /ML|SL/ && OFIC == "HK") {
         EIZO_HK+=money
 	EIZO_HK_GPV+=gpvalue
         next
     }
     #EIZO(CHINA)
-    if (CNTRY == "CN" && BRAND == "EIZO" && PM == "ML" && CS !~ /GC|MM/) {
+    if (CNTRY == "CN" && BRAND ~ /EIZO|EIOEM/ && PM ~ /ML|SL/ && OFIC == "CN") {
         EIZO_CN+=money
 	EIZO_CN_GPV+=gpvalue
         next
@@ -316,13 +316,13 @@ NF == 36 {		    # works on sales data ...
         next
     }
     #IBM Server RD office:all
-    if (CNTRY == "CN" && BRAND == "IBM" && PM == "HJ" && CS == "RS") {
+    if (CNTRY == "CN" && BRAND == "IBM" && PM == "HJ" && CS != "RS") {
         IBM_RD_SER+=money
 	IBM_RD_SER_GPV+=gpvalue
         next
     }
     #IBM Server traditional office:all
-    if (CNTRY == "CN" && BRAND == "IBM" && PM == "HJ" && CS != "RS") {
+    if (CNTRY == "CN" && BRAND == "IBM" && PM == "YR" && CS == "RS") {
 	IBM_TD_SER+=money
 	IBM_TD_SER_GPV+=gpvalue
 	next
@@ -339,17 +339,17 @@ NF == 15 {				    # works on stock data ...
         next
     }
     #LENOVO NB
-    if ( BRAND == "LENOV" && PM == "CA" && CS == "NB" && OFIC == "HK" ) {
+    if ( BRAND == "LENOV" && PM == "CH" && CS == "NB" && OFIC == "HK" ) {
         LENOVO_NP_STOCK+=money
         next
     }
     #LENOVO OTHER
-    if ( BRAND == "LENOV" && PM == "CA" && CS !~ /LD|NB|PC/ && OFIC == "HK" ) {
+    if ( BRAND == "LENOV" && PM == "CA" && CS !~ /LD|PC/ && OFIC == "HK" ) {
         LENOVO_OTHER_STOCK+=money
         next
     }
     #IBM SERVER(HK)
-    if ( BRAND == "IBM" && PM == "RY" && CS != "NS" && OFIC == "HK" ) {
+    if ( BRAND == "IBM" && PM == "RY" && CS != "NS" ) {
 	IBM_SER_HK_STOCK+=money
 	next
     }
@@ -374,17 +374,17 @@ NF == 15 {				    # works on stock data ...
         next
     }
     #HP WORKSTATION 
-    if ( BRAND == "HPB" && PM == "MB" && CS ~ /PB/ && OFIC == "HK" ) {
+    if ( BRAND == "HPB" && PM == "MB" && CS ~ /PB|LD|AI/ && OFIC == "HK" ) {
         HP_WOKSTAN_STOCK+=money
         next
     }
     #HP RPOS
-    if ( BRAND == "HPB" && PM == "MB" && CS ~ /HO/ && OFIC == "HK" ) {
+    if ( BRAND == "HPB" && PM == "MB" && CS ~ /CE/ && OFIC == "HK" ) {
         HP_RPOS_STOCK+=money
         next
     }
     #HPB NB
-    if ( BRAND == "HP" && PM == "FS" && CS ~ /NB/ && OFIC == "HK" ) {
+    if ( BRAND == "HP" && PM == "FS" && CS ~ /NB|UM|AI/ && OFIC == "HK" ) {
         HPB_NB_STOCK+=money
         next
     }
@@ -438,12 +438,12 @@ NF == 15 {				    # works on stock data ...
 	next
     }
     #HPPM   office cs code:all
-    if ( BRAND == "HPPM" && PM == "MW") {
+    if ( BRAND == "HPPM" && PM == "DJ") {
         HPPM_STOCK+=money
         next
     }
     #APC(CHINA)	office cs code:all
-    if ( BRAND == "APC" && PM == "MW") {
+    if ( BRAND == "APC" && PM == "DJ") {
         APC_STOCK+=money
         next
     }
@@ -473,7 +473,7 @@ NF == 15 {				    # works on stock data ...
         next
     }
     #Rui Jie Network
-    if ( BRAND == "RUIJI" && PM == "GL") {
+    if ( BRAND == "RUIJI" && PM == "DL") {
         RUIJI_STOCK+=money
         next
     }
@@ -498,12 +498,12 @@ NF == 15 {				    # works on stock data ...
         next
     }
     #EIZO(HK)
-    if ( BRAND == "EIZO" && PM == "ML" && CS !~ /GC|MM/ && OFIC == "HK") {
+    if ( BRAND ~ /EIZO|EIOEM/ && PM ~ /ML|SL/ && OFIC == "HK") {
         EIZO_HK_STOCK+=money
         next
     }
     #EIZO(CHINA)
-    if ( BRAND == "EIZO" && PM == "ML" && CS !~ /GC|MM/) {
+    if ( BRAND ~ /EIZO|EIOEM/ && PM ~ /ML|SL/ && OFIC == "CN") {
         EIZO_CN_STOCK+=money
         next
     }
@@ -573,12 +573,12 @@ NF == 15 {				    # works on stock data ...
         next
     }
     #IBM Server RD office:all
-    if (CNTRY == "CN" && BRAND == "IBM" && PM == "HJ" && CS == "RS") {
+    if (BRAND == "IBM" && PM == "HJ" && CS != "RS") {
         IBM_RD_SER_STOCK+=money
         next
     }
     #IBM Server traditional office:all
-    if (CNTRY == "CN" && BRAND == "IBM" && PM == "HJ" && CS != "RS") {
+    if (BRAND == "IBM" && PM == "YR" && CS == "RS") {
 	IBM_TD_SER_STOCK+=money
 	next
     }
