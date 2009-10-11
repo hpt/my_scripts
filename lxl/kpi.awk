@@ -30,6 +30,14 @@ FNR==1{next}
     gsub(/[[:cntrl:]]+/,"")
     rebuild_line()
 }
+
+NF != 36 && NF != 15 {
+    print "Fields spliting gets wrong !!!"
+    print NF
+    print
+    exit 3
+}
+
 NF == 36 {		    # works on sales data ...
     #COUNTRY/COMPANY 18|BRAND/IMBRCODE 14|   PM 17  |   CS CODE 28  | OFFICE 19	| GPVALE 23 |
     CNTRY=$18;		BRAND=$14;	    PM=$17;	CS=$28;	    OFIC=$19
