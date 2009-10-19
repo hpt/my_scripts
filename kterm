@@ -4,12 +4,11 @@
 #	         machine in a bash tab of konsole		     	#
 #***********************************************************************#	
 
-# NOTE: 1.base on konsole & a expect script: vterm.exp (for open vterm. for run a 
+# NOTE: *.base on konsole & a expect script: vterm.exp (for open vterm. for run a 
 #	  command see below.)
-# 	2.konsole must be run with "--script" option!
-#	3.konsole must has a session named "vterm", which run vterm.exp
-#	4.for run a command in a bash tab for each machine, konsole must has a 
-#	  session named "bash"
+#	*.konsole must has a session named "vterm", which run vterm.exp
+#	*.for run a command in a bash tab for each machine, konsole must has a 
+#	  session named "bash"; and the title of the session is empty
 
 usage()
 {
@@ -35,25 +34,22 @@ done
 
 [[ $# -lt 1 ]] && usage
 
-#konsole=$(echo $KONSOLE_DCOP |cut -d'(' -f2|cut -d',' -f1)
-konsole_id=$(dcopclient $KONSOLE_DCOP)
-
 tab_open()
 {
-	session_id=$(dcop $konsole_id konsole newSession $session)
+	session_id=$(qdbus org.kde.konsole /Konsole org.kde.konsole.Konsole.newSession)
 	sleep 1
 	case $session in
 		vterm)
-		dcop $konsole_id $session_id sendSession "$1"
+		qdbus org.kde.konsole /Sessions/${session_id} org.kde.konsole.Session.sendText "$1"
 		;;
 		bash)
-		dcop $konsole_id $session_id sendSession "$cmd $1"
+		qdbus org.kde.konsole /Sessions/${session_id} org.kde.konsole.Session.sendText "$cmd $1"
 		;;
 		*)
 		# are you sure???
 		;;
 	esac
-       	dcop $konsole_id $session_id renameSession "$1"
+	qdbus org.kde.konsole /Sessions/${session_id} org.kde.konsole.Session.setTitle 0 "$1"
 }
 
 for h in $*
