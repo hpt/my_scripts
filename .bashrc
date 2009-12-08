@@ -245,6 +245,12 @@ console_screen()
     screen console -M ${CONSOLE_SERVER:-console.lab.bos.redhat.com} -l phan $1
 }
 
+# open a screen window for manual reading
+man_screen()
+{
+    screen -t $2_$1 $1 $2
+}
+
 # loop through serveral dirs...
 # needs building the stack first with 'pushd dir'
 lcd() 
