@@ -234,7 +234,7 @@ assh_screen()
 {
     : ${1:?No machine specified}
     
-    screen assh.exp -t "${TO_AS:-30}" -p "${PW_AS-rhts}" $1
+    screen -t ${1%%.*}_ssh assh.exp -t "${TO_AS:-30}" -p "${PW_AS-rhts}" $1
 }
 
 # open a console screen
@@ -242,7 +242,7 @@ console_screen()
 {
     : ${1:?No machine specified}
 
-    screen console -M ${CONSOLE_SERVER:-console.lab.bos.redhat.com} -l phan $1
+    screen -t ${1%%.*}_con console -M ${CONSOLE_SERVER:-console.lab.bos.redhat.com} -l phan $1
 }
 
 # open a screen window for manual reading
