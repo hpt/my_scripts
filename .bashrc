@@ -248,6 +248,8 @@ console_screen()
 # open a screen window for manual reading
 man_screen()
 {
+    local cmds=(man info)
+    [[ $# -eq 1 ]] && set -- ${cmds[RANDOM%2]} $1
     screen -t $2_$1 $1 $2
 }
 
